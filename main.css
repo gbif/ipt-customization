@@ -697,6 +697,7 @@ div.details{
 div.details table{
     margin: 0;
     padding: 0;
+    table-layout:fixed;
 }
 div.details div.subitem{
 	padding-left:20px;
@@ -709,6 +710,7 @@ div.details td{
     text-align: left;
 /*    padding:0px 10px 0px 0px;*/
     vertical-align:text-top;
+    word-wrap:break-word;
 }
 
 div.details table th.title, 
