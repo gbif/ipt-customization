@@ -37,6 +37,7 @@
 					<li[#if currentMenu=='admin'] class="current"[/#if]><a href="${baseURL}/admin/">[@s.text name="menu.admin"/]</a></li>
 					[/#if]
 					[#if !managerRights]
+					<li><a href="http://data.canadensys.net/tools/[#if localeLanguage=='fr']?lang=fr[/#if]">Tools</a></li>
 					<li><a href="http://data.canadensys.net/vascan/[#if localeLanguage=='fr']?lang=fr[/#if]">Vascan</a></li>
 					[/#if]
 					<li class="menu_last">&nbsp;</li>
