@@ -1,0 +1,661 @@
+From e7c40ad3fcd2c36b78e3a0b992782791366c86ed Mon Sep 17 00:00:00 2001
+From: David Shorthouse <davidpshorthouse@gmail.com>
+Date: Tue, 2 Jul 2013 15:04:57 -0400
+Subject: [PATCH] Canadensys stylings
+
+---
+ WEB-INF/pages/inc/footer.ftl        |   42 ++++-----
+ WEB-INF/pages/inc/header.ftl        |   18 ++--
+ WEB-INF/pages/inc/header_setup.ftl  |    4 +-
+ WEB-INF/pages/inc/menu.ftl          |  165 ++++++++++++++++++-----------------
+ WEB-INF/pages/manage/overview.ftl   |    3 +-
+ WEB-INF/pages/portal/home.ftl       |    3 +
+ WEB-INF/pages/portal/resource.ftl   |    1 +
+ images/dataTables/sort_asc_red.png  |  Bin 0 -> 266 bytes
+ images/dataTables/sort_desc_red.png |  Bin 0 -> 273 bytes
+ js/custom.js                        |   18 ++++
+ styles/custom.css                   |  160 +++++++++++++++++++++++++++++----
+ styles/custom.css.orig              |   36 ++++++++
+ 12 files changed, 319 insertions(+), 131 deletions(-)
+ create mode 100644 images/dataTables/sort_asc_red.png
+ create mode 100644 images/dataTables/sort_desc_red.png
+ create mode 100644 js/custom.js
+ create mode 100644 styles/custom.css.orig
+
+diff --git a/WEB-INF/pages/inc/footer.ftl b/WEB-INF/pages/inc/footer.ftl
+index e5b49c4..30989ac 100644
+--- a/WEB-INF/pages/inc/footer.ftl
++++ b/WEB-INF/pages/inc/footer.ftl
+@@ -2,27 +2,29 @@
+ 			</div>
+ 			</section>
+ 			<footer id="section-footer" class="section section-footer">
+-  			<div id="zone-footer-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">  
+-      		<div id="zone-footer" class="zone zone-footer clearfix container_24">
+-      			<ul>
+-			        <li>IPT <@s.text name="footer.version"/> ${cfg.version!"???"}</li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/"><@s.text name="footer.projectHome"/></a></li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/wiki/IPT2ManualNotes" target="_blank"><@s.text name="footer.useManual"/></a></li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/issues/list" target="_blank"><@s.text name="footer.bugReport"/></a></li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/issues/entry?template=Feature%20request" target="_blank"><@s.text name="footer.featureRequest"/></a></li>
+-		        </ul>
+-      		</div>
+-  			</div>
+ 
+-  			<div id="zone-credit-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">
+-          <div id="zone-credit" class="zone zone-credit clearfix container_24">
+-            <aside class="grid_16 region region-credit-first" id="region-credit-first">
+-              <div class="region-inner region-credit-first-inner">
+-                <p>&copy;2012 <a href="www.gbif.org">Global Biodiversity Information Facility</a>. Data publishers retain all rights to data.</p>
+-              </div>
+-            </aside>
+-          </div>
+-  			</div>
++<div id="footer" class="zone-wrapper zone-footer-wrapper clearfix">  
++	<div id="footer_content" class="zone zone-footer clearfix container_24">
++	<div class="footer_section left">
++		<a id="cc0" class="cc_logo" href="http://creativecommons.org/publicdomain/zero/1.0/" title="CC0 1.0 Universal Public Domain Dedication">&nbsp;</a>
++		<p>Most Canadensys participants have dedicated their data to the <a href="http://creativecommons.org/publicdomain/zero/1.0/">public domain</a>.</p>
++		<ul>
++			<li><a href="http://www.canadensys.net/norms">Data usage norms</a></li>
++			<li>Powered by <a href="http://code.google.com/p/gbif-providertoolkit/">IPT version ${cfg.version!"???"}</a> &copy; <a href="http://www.gbif.org">GBIF</a></li>
++		</ul>
++	</div>
++	<div class="footer_section right">
++		<a rel="license" id="cc_by" class="cc_logo" href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons Attribution 3.0 Unported">&nbsp;</a>
++		<p>All other content on this website is licensed under <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">CC-BY</a>, except for the copyrighted <a href="http://www.canadensys.net/documents">Canadensys logo</a>.</p>
++		<ul>
++			<li><a href="http://www.canadensys.net/about">About Canadensys</a></li>
++			<li><a href="http://www.canadensys.net/contact">Contact us</a></li>
++		</ul>
++	</div>
++	</div>
++</div>
++
++
+ 			</footer>		
+ 		</div>
+ 
+diff --git a/WEB-INF/pages/inc/header.ftl b/WEB-INF/pages/inc/header.ftl
+index 284de8e..d0f1996 100644
+--- a/WEB-INF/pages/inc/header.ftl
++++ b/WEB-INF/pages/inc/header.ftl
+@@ -12,8 +12,8 @@
+ <!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml">
+     <head>
+-    [#assign iptIntro = "The Integrated Publishing Toolkit (IPT) is a tool developed by the Global Biodiversity Information Facility (GBIF) to provide an easy and efficient way of publishing biodiversity data." /]
+-    [#assign keywords = "GBIF, Global Biodiversity Information Facility, IPT, Integrated Publishing Toolkit, checklist, occurrence, metadata, DwC-A, Darwin Core, Darwin Core Archive, biodiversity data, data paper, EML" /]
++    [#assign iptIntro = "Canadensys biodiversity data repository for specimens and checklists" /]
++    [#assign keywords = "Canadensys, integrated publishing toolkit, IPT, repository, checklist, occurrence, specimen" /]
+     [#if hostingOrganisation?exists && hostingOrganisation.name??]
+       [#assign hostDescription = " This IPT is hosted by" + hostingOrganisation.name + "."/]
+       [#assign hostKeyword = ", " + hostingOrganisation.name + "." /]
+@@ -21,22 +21,24 @@
+     <meta name="copyright" lang="en" content="GBIF" />
+     <meta name="description" lang="en" content="${iptIntro}${hostDescription!""}" />
+     <meta name="keywords" lang="en" content="${keywords}${hostKeyword!"."}" />
+-    <link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/reset.css" />
++	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/reset.css" />
+ 	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/text.css" />
+ 	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/960_24_col.css" />
+- 	<link rel="stylesheet" type="text/css" href="${baseURL}/styles/main.css" />
+-  <link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/jquery/dataTable.css"/>
+- 	<link rel="shortcut icon" href="${baseURL}/images/icons/favicon.ico" type="image/x-icon" />
+-	<link href="${baseURL}/rss.do" title="Latest Resources" rel="alternate" type="application/rss+xml" />
++	<link rel="stylesheet" type="text/css" href="${baseURL}/styles/main.css" />
++	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/jquery/dataTable.css"/>
+ 	<link media="all" type="text/css" href="${baseURL}/styles/jquery/jquery-ui-1.8.3.css" rel="stylesheet" />
+   <!-- for css overrides needed for customizations -->
+-  <link rel="stylesheet" type="text/css" href="${baseURL}/styles/custom.css" />
++	<link rel="stylesheet" type="text/css" href="http://data.canadensys.net/common/styles/common.css"/>
++	<link rel="stylesheet" type="text/css" href="${baseURL}/styles/custom.css" />
++	<link rel="shortcut icon" href="http://data.canadensys.net/common/images/favicon.png" type="image/x-icon" />
++	<link href="${baseURL}/rss.do" title="Latest Resources" rel="alternate" type="application/rss+xml" />
+   <!-- for support of old browsers, like IE8. See http://modernizr.com/docs/#html5inie -->
+   <script type="text/javascript" src="${baseURL}/js/modernizr.js"></script>
+ 	<script type="text/javascript" src="${baseURL}/js/jquery/jquery.min-1.5.1.js"></script>				
+ 	<script type="text/javascript" src="${baseURL}/js/jquery/jquery-ui.min-1.8.3.js"></script>
+ 	<script type="text/javascript" src="${baseURL}/js/global.js"></script>
+ 	<script type="text/javascript" src="${baseURL}/js/sorttable.js"></script>
++	<script type="text/javascript" src="${baseURL}/js/custom.js"></script>
+  
+ 
+ [#-- GOOGLE ANALYTICS - asynchroneous: http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html --]
+diff --git a/WEB-INF/pages/inc/header_setup.ftl b/WEB-INF/pages/inc/header_setup.ftl
+index 1a07748..86ed9ed 100644
+--- a/WEB-INF/pages/inc/header_setup.ftl
++++ b/WEB-INF/pages/inc/header_setup.ftl
+@@ -8,13 +8,15 @@
+ 		<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/text.css" />
+ 		<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/960_24_col.css" />
+  		<link rel="stylesheet" type="text/css" href="${baseURL}/styles/main.css"/>
+- 		<link rel="shortcut icon" href="${baseURL}/images/icons/favicon.ico" type="image/x-icon" />
++		<link rel="stylesheet" type="text/css" href="http://data.canadensys.net/common/styles/common.css"/>
+     <!-- for css overrides needed for customizations -->
+     <link rel="stylesheet" type="text/css" href="${baseURL}/styles/custom.css" />
++		<link rel="shortcut icon" href="http://data.canadensys.net/common/images/favicon.png" type="image/x-icon" />
+     <!-- for support of old browsers, like IE8. See http://modernizr.com/docs/#html5inie -->
+     <script type="text/javascript" src="${baseURL}/js/modernizr.js"></script>
+ 		<script type="text/javascript" src="${baseURL}/js/jquery/jquery.min-1.5.1.js"></script>
+ 		<script type="text/javascript" src="${baseURL}/js/global.js"></script>
++		<script type="text/javascript" src="${baseURL}/js/custom.js"></script>
+ 		<style>
+       h1 {
+       	color: #077A2D;
+diff --git a/WEB-INF/pages/inc/menu.ftl b/WEB-INF/pages/inc/menu.ftl
+index 6064adc..9d3e2c1 100644
+--- a/WEB-INF/pages/inc/menu.ftl
++++ b/WEB-INF/pages/inc/menu.ftl
+@@ -1,93 +1,66 @@
+ [#ftl]
+ <script type="text/javascript">
+ 	$(document).ready(function(){
+-  		langs("${localeLanguage}","${baseURL}");
++  		custom_langs("${localeLanguage}","${baseURL}");
+ 	});
+ </script>
+ </head>
+  	<body>
++
++ 		<div id="feedback_bar"><a href="http://code.google.com/p/canadensys/issues/entry?template=Interface%20issue&amp;labels=Section-Interface,Type-Defect,IPT" target="_blank" title="[#if localeLanguage=='fr']Signaler un problème[#else]Report a problem[/#if]">&nbsp;</a></div>
++
+ 		<div class="page clearfix" id="page">
+ 			<header id="section-header" class="section section-header">
+-        <div id="zone-user-wrapper" class="zone-wrapper zone-user-wrapper clearfix">
+-        <div id="zone-user" class="zone zone-user clearfix container_24">
+-          <aside class="prefix_12 grid_12 region region-user-second account" id="region-user-second">
+-            <div class="region-inner region-user-second-inner">
+-      		    <ul id="language-menu">
+-      		      [#if (Session.curr_user)??]
+-                <li>[@s.text name="menu.loggedin"][@s.param]${Session.curr_user.email}[/@s.param][/@s.text]</li>
+-      		      <li[#if currentMenu=="account"] class="current"[/#if] ><a href="${baseURL}/account.do">[@s.text name="menu.account"/]</a></li>
+-      		      <li[#if currentMenu=="logout"] class="current"[/#if]><a href="${baseURL}/logout.do">[@s.text name="menu.logout"/]</a></li>
+-      			    [#else]
+-      		      <li>
+-        				  <form id="login-form" action="${baseURL}/login.do" method="post">
+-        				    <input type="text" size="25" name="email" value="email" class="form-reset" />
+-        		        <input type="password" size="20" name="password" value="password" class="form-reset" />
+-        		        [@s.submit key="portal.login" name="login-submit"/]
+-        				  </form>
+-      					</li>
+-      			    [/#if]
+-      				  <li>
+-      				  	<a href="#"><img src="${baseURL}/images/flags/flag_${localeLanguage}.png"/></a>
+-      					  <ul id="languages">
+-      						<!-- add more languages as translations become available. -->
+-      				  	<!-- To see more information go to langs method in global.js -->
+-      					  </ul>
+-      				  </li>
+-      				</ul>
+-            </div>
+-          </aside>
+-        </div>
+-        </div>
+-      <!-- show production logo only if ipt 1) .war was not built in test mode and 2) run in production mode -->
+-      <div id="zone-branding-wrapper" class="zone-wrapper zone-branding-wrapper clearfix">
+-        <div id="zone-branding" class="zone zone-branding clearfix container_24">
+-          <div class="grid_11 region region-branding" id="region-branding">
+-            <div class="region-inner region-branding-inner">
+-              <div class="branding-data clearfix">
+-                <div class="logo-img">
+-                  <a href="${baseURL}" rel="home" title="GBIF Logo" class="active">
+-                    <img src="${baseURL}/styles/logo.png" />
+-                  </a>
+-                </div>
+-                <hgroup class="site-name-slogan">
+-                  <h1 class="site-name"><a href="${baseURL}" rel="home" title="Home" class="active">GBIF Integrated Publishing Toolkit</a><span class="logoSuperscript">(IPT)</span></h1>
+-                  <h6 class="site-slogan">free and open access to biodiversity data</h6>
+-                [#if !cfg.devMode() && cfg.getRegistryType()=='PRODUCTION']
+-                [#else]
+-                  <img class="testmode" src="${baseURL}/styles/testmode.png" />
+-                [/#if]
+-
+-                </hgroup>
+-              </div>
+-            </div>
+-          </div>
+-      		<div class="grid_13 region region-menu" id="region-menu">
+-            <nav>
+-      	      <ul>
+-      		    	<li[#if currentMenu=='home'] class="current"[/#if]><a href="${baseURL}/">[@s.text name="menu.home"/]</a></li>
+-      		    	[#if managerRights]
+-      		    	<li[#if currentMenu=='manage'] class="current"[/#if]><a href="${baseURL}/manage/">[@s.text name="menu.manage"/]</a></li>
+-      		    	[/#if]
+-      		    	[#if adminRights]
+-      		    	<li[#if currentMenu=='admin'] class="current"[/#if]><a href="${baseURL}/admin/">[@s.text name="menu.admin"/]</a></li>
+-      		    	[/#if]
+-      		    	<li[#if currentMenu=='about'] class="current"[/#if]><a href="${baseURL}/about.do">[@s.text name="menu.about"/]</a></li>
+-      	      </ul>
+-      	    </nav>
+-      	  </div>
+-      	</div>
+-      		    <div id="search">
+-      		     [#--
+-      		        <form action="${baseURL}/search" method="get">
+-      		            <div>
+-      		                <input type="text" name="q" id="search-input" [#if !q??] class="form-reset" value='search ${searchText!" resources"}'[#else] value='${q}'[/#if] />
+-      		                <input class="default" type="submit" value="Search" id="search-submit" />
+-      		        	</div>
+-      		        </form>
+-      		     --]
+-      		    </div>
+-      	</div>
+-		    </header>
++
++			<div id="header">
++				<div id="header_content">
++					<div id="nav_top">
++						[#if (Session.curr_user)??]
++							[@s.text name="menu.loggedin"][@s.param]<em>${Session.curr_user.email}</em>[/@s.param][/@s.text] | <a href="${baseURL}/account.do">[@s.text name="menu.account"/]</a> | <a href="${baseURL}/logout.do">[@s.text name="menu.logout"/]</a></li>
++						[#else]
++							<form id="login-form" action="${baseURL}/login.do" method="post">
++								<input type="text" size="25" name="email" value="email" class="form-reset" />
++								<input type="password" size="20" name="password" value="password" class="form-reset" />
++								[@s.submit key="portal.login" name="login-submit"/]
++							</form>
++					  	[/#if]
++					</div>				
++					<div id="nav_title"><a href="http://data.canadensys.net/[#if localeLanguage=='fr']?lang=fr[/#if]">Canadensys</a></div>
++					<div id="nav_portal"><span class="selected">[#if localeLanguage=='fr']Données[#else]Data[/#if]</span> | <a href="http://www.canadensys.net/[#if localeLanguage=='fr']?lang=fr[/#if]">[#if localeLanguage=='fr']Communauté[#else]Community[/#if]</a></div>
++				</div>
++				<div id="menu">		
++					<ul>
++						<li class="menu_first">&nbsp;</li>
++						[#if !managerRights]
++						<li><a href="http://data.canadensys.net/explorer/[#if localeLanguage=='fr']?lang=fr[/#if]">[#if localeLanguage=='fr']Explorateur[#else]Explorer[/#if]</a></li>
++						[/#if]
++						<li[#if currentMenu=='home'] class="current"[/#if]><a href="${baseURL}/">[#if localeLanguage=='fr']Dépôt[#else]Repository[/#if][#--[@s.text name="menu.home"/]--]</a></li>
++						[#if managerRights]
++						<li[#if currentMenu=='manage'] class="current"[/#if]><a href="${baseURL}/manage/">[@s.text name="menu.manage"/]</a></li>
++						[/#if]
++						[#if adminRights]
++						<li[#if currentMenu=='admin'] class="current"[/#if]><a href="${baseURL}/admin/">[@s.text name="menu.admin"/]</a></li>
++						[/#if]
++						[#if !managerRights]
++						<li><a href="http://data.canadensys.net/tools/[#if localeLanguage=='fr']?lang=fr[/#if]">Tools</a></li>
++						<li><a href="http://data.canadensys.net/vascan/[#if localeLanguage=='fr']?lang=fr[/#if]">Vascan</a></li>
++						[/#if]
++						<li class="menu_last">&nbsp;</li>
++					</ul>  
++				</div>
++			</div>
++
++			[#--<div id="search">
++				<form action="${baseURL}/search" method="get">
++					<div>
++						<input type="text" name="q" id="search-input" [#if !q??] class="form-reset" value='search ${searchText!" resources"}'[#else] value='${q}'[/#if] />
++						<input class="default" type="submit" value="Search" id="search-submit" />
++					</div>
++				</form>
++			</div>--]
++
++		  </header>
++
+ 		    <section id="section-content" class="section section-content">
+           <div id="zone-content-wrapper" class="zone-wrapper zone-content-wrapper clearfix">
+             <div id="zone-content" class="zone zone-content clearfix container_24">
+@@ -97,7 +70,7 @@
+ 			<aside class="grid_6 push_18">
+ 			<div class="clearfix" id="sidebar">
+ 				<h2>[@s.text name='manage.metadata.section' /]</h2>
+-				<ul class="sidebar">
++				<ul class="sidebar round">
+ 				[#list ["basic", "geocoverage", "taxcoverage","tempcoverage", "keywords", "parties", "project", "methods", "citations", "collections", "physical", "additional"] as it]
+ 				 <li[#if currentSideMenu?? && currentSideMenu==it] class="current"[#else] class="sidebar"[/#if]><a href="metadata-${it}.do?r=${resource.shortname!r!}">[@s.text name="submenu.${it}"/]</a></li>
+ 				[/#list]
+@@ -107,6 +80,34 @@
+ 
+ 			<div class="grid_18 pull_6 region region-content" id="region-content">
+ 
++[#elseif sideMenuResource!false]
++
++<div id="side_bar">
++[#if resource.lastPublished??]
++	[#if (resource.recordsPublished>0)]
++	<p><a class="round big_button no_margin" id="dwc_archive" href="${baseURL}/archive.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'Archive', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']Télécharger données[#else]Download dataset[/#if]</a></p>
++	[/#if]
++	<p><a class="round big_button multi_line" id="eml_file" href="${baseURL}/eml.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'EML', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']Télécharger metadonnées en format EML[#else]Download metadata as an EML file[/#if]</a></p>
++	[#if rtfFileExisting]
++	<p><a class="round big_button multi_line" id="rtf_file" href="${baseURL}/rtf.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'RTF', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']Télécharger metadonnées en format RTF[#else]Download metadata as an RTF file[/#if]</a></p>
++	[/#if]
++		[#if eml.physicalData?has_content]
++			[#list eml.physicalData as item]
++			[#if item.distributionUrl?starts_with('http://data.canadensys.net/explorer/d/')]
++			<p><a class="round big_button[#if localeLanguage=='en'] multi_line[/#if]" id="explorer_link" href="${item.distributionUrl}[#if localeLanguage=='fr']&lang=fr[/#if]" target="_blank" onClick="_gaq.push(['_trackEvent', 'Canadensys explorer', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir données sur Canadensys[#else]Explore this dataset on Canadensys[/#if]</a></p>
++			[/#if]
++			[/#list]
++			
++			[#list eml.physicalData as item]
++			[#if item.distributionUrl?starts_with('http://data.gbif.org/datasets/')]
++			<p><a class="round big_button" id="gbif_link" href="${item.distributionUrl}" target="_blank" onClick="_gaq.push(['_trackEvent', 'GBIF data portal', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir données sur GBIF[#else]Explore this dataset on GBIF[/#if]</a></p>
++			[/#if]
++			[/#list]
++		[/#if]
++[/#if]
++</div>
++
++			<div class="grid_18 region region-content" id="region-content">
+ [#else]
+ 
+ 			<div class="grid_24 region region-content" id="region-content">
+diff --git a/WEB-INF/pages/manage/overview.ftl b/WEB-INF/pages/manage/overview.ftl
+index d741010..b579a3a 100644
+--- a/WEB-INF/pages/manage/overview.ftl
++++ b/WEB-INF/pages/manage/overview.ftl
+@@ -22,7 +22,8 @@ $(document).ready(function(){
+ 	$('.confirmDeletion').jConfirmAction({question : "<#if resource.status=='REGISTERED'><@s.text name='manage.resource.delete.confirm.registered'/><#else><@s.text name='basic.confirm'/></#if>", yesAnswer : "<@s.text name='basic.yes'/>", cancelAnswer : "<@s.text name='basic.no'/>"});
+ 
+     var showReport=false;
+-	$("#toggleReport").click(function() {
++	$("#toggleReport").click(function(e) {
++		e.preventDefault();
+ 		if(showReport){
+ 			showReport=false;
+ 			$("#toggleReport").text("<@s.text name='manage.overview.published.see.report'/>");
+diff --git a/WEB-INF/pages/portal/home.ftl b/WEB-INF/pages/portal/home.ftl
+index 0c92482..454eaa8 100644
+--- a/WEB-INF/pages/portal/home.ftl
++++ b/WEB-INF/pages/portal/home.ftl
+@@ -7,6 +7,9 @@
+ <script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
+   <@resourcesTable shownPublicly=true numResourcesShown=20 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
+ <h1 class="rtableTitle"><@s.text name="portal.home.title"/></h1>
++
++<p><#if localeLanguage=='fr'>Suivez <a href="http://www.canadensys.net/data-publication-guide?lang=fr">notre guide en 7 étapes</a> pour publier votre propre jeu de données sur ce dépôt.<#else>Follow <a href="http://www.canadensys.net/data-publication-guide">our 7-step guide</a> to publish your own dataset on this repository.</#if></p>
++
+ <div id="rtableContainer"></div>
+ 
+ <!-- RSS Feed shown if there are resources -->
+diff --git a/WEB-INF/pages/portal/resource.ftl b/WEB-INF/pages/portal/resource.ftl
+index e24e5b1..752701c 100644
+--- a/WEB-INF/pages/portal/resource.ftl
++++ b/WEB-INF/pages/portal/resource.ftl
+@@ -20,6 +20,7 @@
+ <#include "/WEB-INF/pages/macros/forms.ftl"/>
+ <#include "/WEB-INF/pages/inc/header.ftl">
+ 	<title>${resource.title!resource.shortname!}</title>	
++<#assign sideMenuResource=true />
+ <#include "/WEB-INF/pages/inc/menu.ftl">
+ 
+ <div class="grid_24">
+diff --git a/images/dataTables/sort_asc_red.png b/images/dataTables/sort_asc_red.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..44db5a6cd890a6251c3ede87783b8ed19a7ef232
+GIT binary patch
+literal 266
+zcmeAS@N?(olHy`uVBq!ia0vp^!XV7S1|*9D%+3HQwj^(N7a$D;Kb?2i11Zh|kH}&M
+z25z8IZed1-S#u<Sg6t)pzOL+d*`!1j^uKA$&jJcf_jGX#u{iy9k~ZI=00GzYu2Wi;
+zFvUk66*IV!=zW8MDOiYS+m1+v+ll(A@;eUNTost*InUvXT5_72dbwRuc~PdLo9`i?
+zsF`03R-SnHhN<L0<*LB_Woeh#DwsqK7=GXTD_WK|sUez)@yY?yr-zf@HIz-UX1pzM
+zW{J=a=GTEMS*j*a6HGt;<iTH6sRsgf2kPzL^2|<@{K6RAFDK&VD?b_NL<Ub+KbLh*
+G2~7aKoLN5r
+
+literal 0
+HcmV?d00001
+
+diff --git a/images/dataTables/sort_desc_red.png b/images/dataTables/sort_desc_red.png
+new file mode 100644
+index 0000000000000000000000000000000000000000..fb095c930adb3c4b0f7ed796cb1985687edbb64e
+GIT binary patch
+literal 273
+zcmeAS@N?(olHy`uVBq!ia0vp^!XV7S1|*9D%+3HQwj^(N7a$D;Kb?2i11Zh|kH}&M
+z25z8IZed1-S#u<Sg6t)pzOL+d*`!2e<QFqtvjhsw^K@|xu{izqiZ!2Oq5$iI_u{R!
+z3A)!3*u_4UzhiP)6tsb1;nj;bn*5fBuW(8FV!kfiMa0kOtc_pVGZl5$7XO9Mntx3G
+zdvc#+*#4<HL9dd!ypJ;Nl`*U=+iV$@ai@bf&42z(Wj~DqovC~;o_9Q6ZGU?~%_*kW
+zs~Strn|4i^6|tz**2*&J_q17-N$rg1B<?A%3fbIZcuT@I%f~*uFMLy(-mL?QN4^1F
+O%HZkh=d#Wzp$Py6l3}6%
+
+literal 0
+HcmV?d00001
+
+diff --git a/js/custom.js b/js/custom.js
+new file mode 100644
+index 0000000..1a6ff39
+--- /dev/null
++++ b/js/custom.js
+@@ -0,0 +1,18 @@
++/*
++ * This method replaces the function langs from global.js
++ * It is called from menu.ftl
++ */
++function custom_langs(localLanguage,baseUrl) {
++	var location = window.location+'';
++	var request = '?request_locale';
++	if(location.indexOf("request_locale") != -1){
++		location = location.slice(0,location.indexOf("request_locale")-1);
++	}
++	if(location.indexOf("?") != -1){
++		request = '&request_locale';		
++	}
++
++	if (localLanguage == "en") { $("#nav_top").append('| <a href="'+location+request+'=fr">Fran&ccedil;ais</a>'); }
++	else if (localLanguage == "fr") { $("#nav_top").append('| <a href="'+location+request+'=en">English</a>'); }
++
++}
+\ No newline at end of file
+diff --git a/styles/custom.css b/styles/custom.css
+index 355407d..c75f991 100644
+--- a/styles/custom.css
++++ b/styles/custom.css
+@@ -5,32 +5,154 @@
+  they can create their own modernizr.js with the desired supported elements. They only have to replace the 'default'
+  file with their own.
+ */
+-a {
+-  color: #008959;
++#page{
++  margin:0px;
++  min-height:100%;
++}
++
++Header {
++  height:120px;
++}
++#menu ul li {
++  margin:0px;
++  line-height:1.1em;
++}
++#nav_top{
++  line-height:1.2em;
++}
++#nav_title{
++  line-height:1.25em;
++}
++#nav_portal{
++  line-height:1.3em;
++}
++#section-content{
++  width:100%;
++  padding:0px;
++  margin:36px 0px 90px;
++  font-size: 1.35em;
+   font-weight: normal;
++  line-height: 1.5em;
++  text-align: left;
++}
++#zone-content-wrapper{
++  margin:0px;
++  padding: 0 36px;
++}
++#zone-content{
++  position:relative;
++}
++
++/* Messages */
++.errorMessage, .actionMessage, .warnMessage{padding:5px;}
++.errorMessage li, .actionMessage li, .warnMessage li{margin-left:20px;padding-left:5px;}
++p.actionMessage, p.warnMessage{padding-left:30px;}
++
++#region-content{width:100%;padding:0px;margin:0px;}
++#region-content h1{color:#22241E;font-size:1.8em;padding:10px 0;}
++#region-content .edit{font-size:20px;}
++#region-content p{font-size:1em;}
++#region-content div.details{font-size:1em;font-size:1.2em;}
++#region-menu{display:none;height:0px;}
++div.resourceOverview div.bodyOverview{width:auto;}
++div.resourceOverview p {font-size:1.2em !important;}
++div.resourceOverview div.bodyOverview div.details {width:600px;}
++div.resourceOverviewPortal div.body th {width:135px;padding-left:1em;text-indent:-1em;}
++#zone-content{margin:0px;margin-bottom:36px;}
++#zone-content .grid_18{
++  margin-right: 336px;
++  width:auto;
++}
++#zone-content .grid_24 .grid_18{
++  margin-right:0px;
++}
++div#sidebar{
++  margin-top:0px;
++}
++div#sidebar h2{
++  display:none;
++}
++div#sidebar ul{
++  padding:0px;
++}
++div#sidebar ul li {
++  border-bottom: 1px solid #A8A7A5;
++  font-size:1.1em;
++  line-height:1.1em;
++  padding:0px;
++}
++div#sidebar ul li.current {
++  padding-left:0px;
++  background-color: #d3d3d3;
++}
++div#sidebar ul li:last-child {
++    border-bottom: medium none;
++}
++div#sidebar ul li a{
++  display:block;
++  padding:10px 15px;
++}
++div#sidebar ul li a:hover{
++  text-decoration:none;
++  background-color: #d3d3d3;
++}
++div#sidebar ul li.current a {
++  font-weight:normal;
++  background-color:transparent;
++  background-image:url("http://data.canadensys.net/common/images/arrow.png");
++  background-position:3px 6px;
++  background-repeat:no-repeat no-repeat;
++}
++#side_bar{
++  padding-right:10px;
+ }
+-.green{
+-  color: #008959;
++#rtable_filter{display:none;}
++.dataTables_filter{background-color:transparent;}
++table#rtable thead{background-color:transparent;}
++table#rtable tr{line-height:2em;}
++table.display thead th{color:#A82400;}
++table.display thead th.sorting_disabled{color:#22241E;}
++.sorting_asc, .sorting_desc{box-shadow:none;}
++.sorting_asc{
++  background:url("../images/dataTables/sort_asc_red.png") no-repeat scroll right center transparent;
+ }
+-#region-menu nav ul li.current {
+-  background-color: #008959;
++.sorting_desc{
++  background:url("../images/dataTables/sort_desc_red.png") no-repeat scroll right center transparent;
+ }
+-#region-content h1 {
+-  color: #008959;
++tr.even td.sorting_1{background-color:transparent;}
++#rtable_info{display:none;}
++.paginate_disabled_previous, .paginate_disabled_next{cursor:default;}
++.container_24, .container_24 .grid_18, .container_24 .grid_24{width:auto;}
++.container_24 .suffix_6{padding:0px;width:100%;}
++.container_24 .grid_17{width:100%;}
++.container_24 .pull_6 {left:0px;}
++.container_24 .push_18{position:absolute;right:0px;left:auto;min-width:275px;}
++form.half{
++  width:50%;
+ }
+-div.groupmenu ul li a {
+-  color: #008959;
++.topForm label {
++    display: inline;
++    font-size: 12px;
+ }
+-table#rtable thead{
+-  background-color: #dbf0e8;
++.topForm input {
++  margin:0 0 1.5em 0.5em;
++  width:90%;
+ }
+-.dataTables_filter {
+-  background-color: #dbf0e8;
++#config div.checkbox{
++  padding-top:0px;
+ }
+-tr.even td.sorting_1 {
+-  background-color: #E6F5EB;
++#location>label{
++  display:block;
+ }
+-.actionMessage{
+-  color: #008959;
+-  background-color: #dbf0e8;
++div.halfcolumn{margin-top:10px;}
++div.conceptItem{float:none;}
++#zone-footer-wrapper{display:none;height:0px;}
++#section-footer{height:90px;}
++#footer_content{text-align:left;}
++#footer_content div.right{
++  font-size:1em;
++  margin:0px;
++  text-align:left;
++  width:500px;
+ }
++#footer_content ul li{margin:0px;}
+\ No newline at end of file
+diff --git a/styles/custom.css.orig b/styles/custom.css.orig
+new file mode 100644
+index 0000000..c00f1b9
+--- /dev/null
++++ b/styles/custom.css.orig
+@@ -0,0 +1,36 @@
++/*
++ For css overrides needed for customizations.
++ By having this separate file for css overrides, it should be easier to backup and restore customizations.
++ If some organization want to style the IPT to their own branding and they want to support more backward compatibility
++ they can create their own modernizr.js with the desired supported elements. They only have to replace the 'default'
++ file with their own.
++*/
++a {
++  color: #008959;
++  font-weight: normal;
++}
++.green{
++  color: #008959;
++}
++#region-menu nav ul li.current {
++  background-color: #008959;
++}
++#region-content h1 {
++  color: #008959;
++}
++div.groupmenu ul li a {
++  color: #008959;
++}
++table#rtable thead{
++  background-color: #dbf0e8;
++}
++.dataTables_filter {
++  background-color: #dbf0e8;
++}
++tr.even td.sorting_1 {
++  background-color: #E6F5EB;
++}
++.actionMessage{
++  color: #008959;
++  background-color: #dbf0e8;
++}
+\ No newline at end of file
+-- 
+1.7.10.2 (Apple Git-33)
+
