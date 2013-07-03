@@ -1,9 +1,11 @@
-From e7c40ad3fcd2c36b78e3a0b992782791366c86ed Mon Sep 17 00:00:00 2001
+From c1a58248cb52c20b03892d889f658881ab5ffbd0 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
-Date: Tue, 2 Jul 2013 15:04:57 -0400
-Subject: [PATCH] Canadensys stylings
+Date: Wed, 3 Jul 2013 13:31:21 -0400
+Subject: [PATCH] Canadensys styling
 
 ---
+ .gitignore                          |    1 +
+ WEB-INF/datadir.location            |    1 -
  WEB-INF/pages/inc/footer.ftl        |   42 ++++-----
  WEB-INF/pages/inc/header.ftl        |   18 ++--
  WEB-INF/pages/inc/header_setup.ftl  |    4 +-
@@ -14,14 +16,31 @@ Subject: [PATCH] Canadensys stylings
  images/dataTables/sort_asc_red.png  |  Bin 0 -> 266 bytes
  images/dataTables/sort_desc_red.png |  Bin 0 -> 273 bytes
  js/custom.js                        |   18 ++++
- styles/custom.css                   |  160 +++++++++++++++++++++++++++++----
+ styles/custom.css                   |  161 ++++++++++++++++++++++++++++++----
  styles/custom.css.orig              |   36 ++++++++
- 12 files changed, 319 insertions(+), 131 deletions(-)
+ 14 files changed, 321 insertions(+), 132 deletions(-)
+ create mode 100644 .gitignore
+ delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
  create mode 100644 images/dataTables/sort_desc_red.png
  create mode 100644 js/custom.js
  create mode 100644 styles/custom.css.orig
 
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..e43b0f9
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1 @@
++.DS_Store
+diff --git a/WEB-INF/datadir.location b/WEB-INF/datadir.location
+deleted file mode 100644
+index 856c0e1..0000000
+--- a/WEB-INF/datadir.location
++++ /dev/null
+@@ -1 +0,0 @@
+-/Users/dshorthouse/Documents/Canadensys/ipt-data
+\ No newline at end of file
 diff --git a/WEB-INF/pages/inc/footer.ftl b/WEB-INF/pages/inc/footer.ftl
 index e5b49c4..30989ac 100644
 --- a/WEB-INF/pages/inc/footer.ftl
@@ -435,10 +454,10 @@ index 0000000..1a6ff39
 +}
 \ No newline at end of file
 diff --git a/styles/custom.css b/styles/custom.css
-index 355407d..c75f991 100644
+index 355407d..95b839b 100644
 --- a/styles/custom.css
 +++ b/styles/custom.css
-@@ -5,32 +5,154 @@
+@@ -5,32 +5,155 @@
   they can create their own modernizr.js with the desired supported elements. They only have to replace the 'default'
   file with their own.
  */
@@ -589,6 +608,7 @@ index 355407d..c75f991 100644
  }
 -.dataTables_filter {
 -  background-color: #dbf0e8;
++.checkbox input {width:5%;}
 +#config div.checkbox{
 +  padding-top:0px;
  }
@@ -601,7 +621,7 @@ index 355407d..c75f991 100644
 -  color: #008959;
 -  background-color: #dbf0e8;
 +div.halfcolumn{margin-top:10px;}
-+div.conceptItem{float:none;}
++div.conceptItem{float:none;clear:both;}
 +#zone-footer-wrapper{display:none;height:0px;}
 +#section-footer{height:90px;}
 +#footer_content{text-align:left;}
