@@ -1,7 +1,7 @@
 From c1a58248cb52c20b03892d889f658881ab5ffbd0 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
-Subject: [PATCH] Canadensys styling
+Subject: [PATCH 1/2] Canadensys styling
 
 ---
  .gitignore                          |    1 +
@@ -676,6 +676,32 @@ index 0000000..c00f1b9
 +  background-color: #dbf0e8;
 +}
 \ No newline at end of file
+-- 
+1.7.10.2 (Apple Git-33)
+
+
+From 02bd046446f563f2580354b11af78194b6ea25bd Mon Sep 17 00:00:00 2001
+From: David Shorthouse <davidpshorthouse@gmail.com>
+Date: Wed, 3 Jul 2013 16:09:15 -0400
+Subject: [PATCH 2/2] Fix for spacing of navigation links in mapping pages
+ under FF
+
+---
+ styles/custom.css |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/styles/custom.css b/styles/custom.css
+index 95b839b..596c02d 100644
+--- a/styles/custom.css
++++ b/styles/custom.css
+@@ -147,6 +147,7 @@ form.half{
+ }
+ div.halfcolumn{margin-top:10px;}
+ div.conceptItem{float:none;clear:both;}
++div.groupmenu ul{clear:both;margin-top:0px;}
+ #zone-footer-wrapper{display:none;height:0px;}
+ #section-footer{height:90px;}
+ #footer_content{text-align:left;}
 -- 
 1.7.10.2 (Apple Git-33)
 
