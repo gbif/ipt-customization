@@ -1,7 +1,7 @@
 ipt-customizations
 ==================
 
-Customize the [Global Biodiversity Information Facility](http://www.gbif.org)'s [Integrated Publishing Toolkit (IPT)](http://code.google.com/p/gbif-providertoolkit/) v. 2.0.5 with alternative freemarker, css, and js.
+Customize the [Global Biodiversity Information Facility](http://www.gbif.org)'s [Integrated Publishing Toolkit (IPT)](http://code.google.com/p/gbif-providertoolkit/) v. 2.0.5 with alternative freemarker, css, and js. A similar set of customized files was produced for IPT v. 2.0.3 and are available from [a previous release](https://github.com/Canadensys/ipt-customization/releases/v2.0.3).
 
 These patch is specific to IPT 2.0.5 and the [Canadensys IPT](http://data.canadensys.net/ipt/) install. It is provided here to illustrate how the Canadensys team coordinates its IPT customization and for its version control.
 
