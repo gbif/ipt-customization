@@ -1,4 +1,4 @@
-From 64d9579aa0b854805e0ab7b78677a1ef2b4d5de5 Mon Sep 17 00:00:00 2001
+From 466067617f9b0e22d61484a5911f2e1c26a4d167 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -9,7 +9,7 @@ Subject: [PATCH] Canadensys styling
  WEB-INF/pages/inc/footer.ftl            |   42 +++----
  WEB-INF/pages/inc/header.ftl            |   18 +--
  WEB-INF/pages/inc/header_setup.ftl      |    4 +-
- WEB-INF/pages/inc/menu.ftl              |  165 ++++++++++++-------------
+ WEB-INF/pages/inc/menu.ftl              |  165 +++++++++++++-------------
  WEB-INF/pages/macros/resourcesTable.ftl |    6 +-
  WEB-INF/pages/manage/eml/parties.ftl    |    3 +
  WEB-INF/pages/manage/mapping.ftl        |   24 ++--
@@ -19,9 +19,9 @@ Subject: [PATCH] Canadensys styling
  images/dataTables/sort_asc_red.png      |  Bin 0 -> 266 bytes
  images/dataTables/sort_desc_red.png     |  Bin 0 -> 273 bytes
  js/custom.js                            |   18 +++
- styles/custom.css                       |  199 ++++++++++++++++++++++++++++---
+ styles/custom.css                       |  198 ++++++++++++++++++++++++++++---
  styles/custom.css.orig                  |   36 ++++++
- 17 files changed, 377 insertions(+), 147 deletions(-)
+ 17 files changed, 376 insertions(+), 147 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
@@ -556,10 +556,10 @@ index 0000000..1a6ff39
 +}
 \ No newline at end of file
 diff --git a/styles/custom.css b/styles/custom.css
-index 355407d..d30b49c 100644
+index 355407d..20e05d2 100644
 --- a/styles/custom.css
 +++ b/styles/custom.css
-@@ -5,32 +5,193 @@
+@@ -5,32 +5,192 @@
   they can create their own modernizr.js with the desired supported elements. They only have to replace the 'default'
   file with their own.
  */
@@ -743,7 +743,6 @@ index 355407d..d30b49c 100644
 -  background-color: #dbf0e8;
 +.checkbox div {display:inline;}
 +.checkbox input {width:5%;}
-+.unittype{margin-top:10px;}
 +#config div.checkbox{
 +  padding-top:0px;
  }
