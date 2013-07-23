@@ -1,4 +1,4 @@
-From 03e0bb290cb28e9123fc5ae1b9f142c5429d8046 Mon Sep 17 00:00:00 2001
+From d8e895247f233e5375ecfce51e8979747447d973 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -7,7 +7,7 @@ Subject: [PATCH] Canadensys styling
  .gitignore                              |    1 +
  WEB-INF/datadir.location                |    1 -
  WEB-INF/pages/inc/footer.ftl            |   42 +++----
- WEB-INF/pages/inc/header.ftl            |   18 +--
+ WEB-INF/pages/inc/header.ftl            |   20 ++--
  WEB-INF/pages/inc/header_setup.ftl      |    4 +-
  WEB-INF/pages/inc/menu.ftl              |  165 ++++++++++++-------------
  WEB-INF/pages/macros/resourcesTable.ftl |    6 +-
@@ -21,7 +21,7 @@ Subject: [PATCH] Canadensys styling
  js/custom.js                            |   18 +++
  styles/custom.css                       |  199 ++++++++++++++++++++++++++++---
  styles/custom.css.orig                  |   36 ++++++
- 17 files changed, 377 insertions(+), 147 deletions(-)
+ 17 files changed, 378 insertions(+), 148 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
@@ -99,10 +99,10 @@ index e5b49c4..30989ac 100644
  		</div>
  
 diff --git a/WEB-INF/pages/inc/header.ftl b/WEB-INF/pages/inc/header.ftl
-index 284de8e..d0f1996 100644
+index 284de8e..90f74a7 100644
 --- a/WEB-INF/pages/inc/header.ftl
 +++ b/WEB-INF/pages/inc/header.ftl
-@@ -12,8 +12,8 @@
+@@ -12,31 +12,33 @@
  <!DOCTYPE html>
  <html xmlns="http://www.w3.org/1999/xhtml">
      <head>
@@ -111,9 +111,10 @@ index 284de8e..d0f1996 100644
 +    [#assign iptIntro = "Canadensys biodiversity data repository for specimens and checklists" /]
 +    [#assign keywords = "Canadensys, integrated publishing toolkit, IPT, repository, checklist, occurrence, specimen" /]
      [#if hostingOrganisation?exists && hostingOrganisation.name??]
-       [#assign hostDescription = " This IPT is hosted by" + hostingOrganisation.name + "."/]
+-      [#assign hostDescription = " This IPT is hosted by" + hostingOrganisation.name + "."/]
++      [#assign hostDescription = ". This IPT is hosted by " + hostingOrganisation.name + "."/]
        [#assign hostKeyword = ", " + hostingOrganisation.name + "." /]
-@@ -21,22 +21,24 @@
+     [/#if]
      <meta name="copyright" lang="en" content="GBIF" />
      <meta name="description" lang="en" content="${iptIntro}${hostDescription!""}" />
      <meta name="keywords" lang="en" content="${keywords}${hostKeyword!"."}" />
