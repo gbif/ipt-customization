@@ -1,4 +1,4 @@
-From d8e895247f233e5375ecfce51e8979747447d973 Mon Sep 17 00:00:00 2001
+From 30ea8c94a92af8d8b6cc677de4974a3f42edefa5 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -10,18 +10,18 @@ Subject: [PATCH] Canadensys styling
  WEB-INF/pages/inc/header.ftl            |   20 ++--
  WEB-INF/pages/inc/header_setup.ftl      |    4 +-
  WEB-INF/pages/inc/menu.ftl              |  165 ++++++++++++-------------
- WEB-INF/pages/macros/resourcesTable.ftl |    6 +-
+ WEB-INF/pages/macros/resourcesTable.ftl |   10 +-
  WEB-INF/pages/manage/eml/parties.ftl    |    3 +
  WEB-INF/pages/manage/mapping.ftl        |   24 ++--
  WEB-INF/pages/manage/overview.ftl       |    3 +-
- WEB-INF/pages/portal/home.ftl           |    3 +
+ WEB-INF/pages/portal/home.ftl           |    6 +-
  WEB-INF/pages/portal/resource.ftl       |    1 +
  images/dataTables/sort_asc_red.png      |  Bin 0 -> 266 bytes
  images/dataTables/sort_desc_red.png     |  Bin 0 -> 273 bytes
  js/custom.js                            |   18 +++
  styles/custom.css                       |  199 ++++++++++++++++++++++++++++---
  styles/custom.css.orig                  |   36 ++++++
- 17 files changed, 378 insertions(+), 148 deletions(-)
+ 17 files changed, 380 insertions(+), 153 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
@@ -363,10 +363,10 @@ index 6064adc..9d3e2c1 100644
  
  			<div class="grid_24 region region-content" id="region-content">
 diff --git a/WEB-INF/pages/macros/resourcesTable.ftl b/WEB-INF/pages/macros/resourcesTable.ftl
-index ea3953f..7d596f8 100644
+index ea3953f..cb55ff1 100644
 --- a/WEB-INF/pages/macros/resourcesTable.ftl
 +++ b/WEB-INF/pages/macros/resourcesTable.ftl
-@@ -15,8 +15,8 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
+@@ -15,16 +15,15 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
      var aDataSet = [
        <#list resources as r>
            [<#if r.eml.logoUrl?has_content>'<img class="resourceminilogo" src="${r.eml.logoUrl}" />'<#else>'${emptyString}'</#if>,
@@ -376,16 +376,25 @@ index ea3953f..7d596f8 100644
 +           <#if r.status=='REGISTERED'>'${r.organisation.alias?replace("\'", "\\'")?replace("\"", '\\"')!r.organisation.name?replace("'", "\'")?replace("\"", '\\"')}'<#else>'<@s.text name="manage.home.not.registered"/>'</#if>,
             <#if r.coreType?has_content && types[r.coreType?lower_case]?has_content>'${types[r.coreType?lower_case]?cap_first!}'<#else>'${emptyString}'</#if>,
             <#if r.subtype?has_content && datasetSubtypes[r.subtype?lower_case]?has_content >'${datasetSubtypes[r.subtype?lower_case]?cap_first!}'<#else>'${emptyString}'</#if>,
-            '${r.recordsPublished!0}',
-@@ -24,7 +24,7 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
+-           '${r.recordsPublished!0}',
++           '${r.recordsPublished?c!0}',
+            '${r.modified?date}',
             <#if r.published>'${(r.lastPublished?date)!}'<#else>'<@s.text name="portal.home.not.published"/>'</#if>,
-            '${(r.nextPublished?date)!'${emptyString}'}',
+-           '${(r.nextPublished?date)!'${emptyString}'}',
             <#if r.status=='PRIVATE'>'<@s.text name="manage.home.visible.private"/>'<#else>'<@s.text name="manage.home.visible.public"/>'</#if>,
 -           <#if r.creator??>'${r.creator.firstname!} ${r.creator.lastname!}'<#else>'${emptyString}'</#if>]<#if r_has_next>,</#if>
 +           <#if r.creator??>'${r.creator.firstname?replace("\'", "\\'")?replace("\"", '\\"')!} ${r.creator.lastname?replace("\'", "\\'")?replace("\"", '\\"')!}'<#else>'${emptyString}'</#if>]<#if r_has_next>,</#if>
        </#list>
      ];
  
+@@ -57,7 +56,6 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
+                 { "sTitle": "<@s.text name="portal.home.records"/>", "bSearchable": false},
+                 { "sTitle": "<@s.text name="manage.home.last.modified"/>", "bSearchable": false},
+                 { "sTitle": "<@s.text name="manage.home.last.publication" />", "bSearchable": false},
+-                { "sTitle": "<@s.text name="manage.home.next.publication" />", "bSearchable": false},
+                 { "sTitle": "<@s.text name="manage.home.visible"/>", "bSearchable": false, "bVisible": <#if shownPublicly>false<#else>true</#if>},
+                 { "sTitle": "<@s.text name="portal.home.author"/>", "bVisible": <#if shownPublicly>false<#else>true</#if>}
+             ],
 diff --git a/WEB-INF/pages/manage/eml/parties.ftl b/WEB-INF/pages/manage/eml/parties.ftl
 index 0970af1..d692a46 100644
 --- a/WEB-INF/pages/manage/eml/parties.ftl
@@ -476,11 +485,18 @@ index d741010..b579a3a 100644
  			showReport=false;
  			$("#toggleReport").text("<@s.text name='manage.overview.published.see.report'/>");
 diff --git a/WEB-INF/pages/portal/home.ftl b/WEB-INF/pages/portal/home.ftl
-index 0c92482..454eaa8 100644
+index 0c92482..a817625 100644
 --- a/WEB-INF/pages/portal/home.ftl
 +++ b/WEB-INF/pages/portal/home.ftl
-@@ -7,6 +7,9 @@
- <script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
+@@ -1,12 +1,14 @@
+ <#escape x as x?html>
+   <#include "/WEB-INF/pages/inc/header.ftl">
++<script type="text/javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
+ <title><@s.text name="title"/></title>
+   <#include "/WEB-INF/pages/inc/menu.ftl">
+   <#include "/WEB-INF/pages/macros/resourcesTable.ftl"/>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.js"></script>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
    <@resourcesTable shownPublicly=true numResourcesShown=20 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
  <h1 class="rtableTitle"><@s.text name="portal.home.title"/></h1>
 +
