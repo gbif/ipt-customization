@@ -1,4 +1,4 @@
-From 40752064961a6c4f8c8e3766ec895e3c4fd7d531 Mon Sep 17 00:00:00 2001
+From aedc0624c5df07810dd29d52fe99efb49acf70c1 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -6,23 +6,23 @@ Subject: [PATCH] Canadensys styling
 ---
  .gitignore                              |    1 +
  WEB-INF/datadir.location                |    1 -
- WEB-INF/pages/inc/footer.ftl            |   42 +++----
- WEB-INF/pages/inc/header.ftl            |   29 ++---
+ WEB-INF/pages/inc/footer.ftl            |   43 +++----
+ WEB-INF/pages/inc/header.ftl            |   30 ++---
  WEB-INF/pages/inc/header_setup.ftl      |    4 +-
  WEB-INF/pages/inc/menu.ftl              |  168 +++++++++++++-------------
- WEB-INF/pages/macros/resourcesTable.ftl |   11 +-
+ WEB-INF/pages/macros/resourcesTable.ftl |   13 +-
  WEB-INF/pages/manage/eml/parties.ftl    |    3 +
  WEB-INF/pages/manage/home.ftl           |   15 ++-
  WEB-INF/pages/manage/mapping.ftl        |   24 ++--
  WEB-INF/pages/manage/overview.ftl       |    3 +-
- WEB-INF/pages/portal/home.ftl           |    8 +-
- WEB-INF/pages/portal/resource.ftl       |    1 +
+ WEB-INF/pages/portal/home.ftl           |   10 +-
+ WEB-INF/pages/portal/resource.ftl       |    7 +-
  images/dataTables/sort_asc_red.png      |  Bin 0 -> 266 bytes
  images/dataTables/sort_desc_red.png     |  Bin 0 -> 273 bytes
  js/custom.js                            |   18 +++
  styles/custom.css                       |  199 ++++++++++++++++++++++++++++---
  styles/custom.css.orig                  |   36 ++++++
- 18 files changed, 392 insertions(+), 171 deletions(-)
+ 18 files changed, 398 insertions(+), 177 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
@@ -46,11 +46,13 @@ index 856c0e1..0000000
 -/Users/dshorthouse/Documents/Canadensys/ipt-data
 \ No newline at end of file
 diff --git a/WEB-INF/pages/inc/footer.ftl b/WEB-INF/pages/inc/footer.ftl
-index e5b49c4..30989ac 100644
+index e5b49c4..e0c5079 100644
 --- a/WEB-INF/pages/inc/footer.ftl
 +++ b/WEB-INF/pages/inc/footer.ftl
-@@ -2,27 +2,29 @@
+@@ -1,28 +1,31 @@
  			</div>
+ 			</div>
++			</div>
  			</section>
  			<footer id="section-footer" class="section section-footer">
 -  			<div id="zone-footer-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">  
@@ -100,10 +102,10 @@ index e5b49c4..30989ac 100644
  		</div>
  
 diff --git a/WEB-INF/pages/inc/header.ftl b/WEB-INF/pages/inc/header.ftl
-index 284de8e..84ceb57 100644
+index 284de8e..b1bb74f 100644
 --- a/WEB-INF/pages/inc/header.ftl
 +++ b/WEB-INF/pages/inc/header.ftl
-@@ -12,32 +12,33 @@
+@@ -12,32 +12,32 @@
  <!DOCTYPE html>
  <html xmlns="http://www.w3.org/1999/xhtml">
      <head>
@@ -116,7 +118,7 @@ index 284de8e..84ceb57 100644
 +      [#assign hostDescription = ". This IPT is hosted by " + hostingOrganisation.name + "."/]
        [#assign hostKeyword = ", " + hostingOrganisation.name + "." /]
      [/#if]
-     <meta name="copyright" lang="en" content="GBIF" />
+-    <meta name="copyright" lang="en" content="GBIF" />
      <meta name="description" lang="en" content="${iptIntro}${hostDescription!""}" />
      <meta name="keywords" lang="en" content="${keywords}${hostKeyword!"."}" />
 -    <link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/reset.css" />
@@ -147,7 +149,7 @@ index 284de8e..84ceb57 100644
  
  [#-- GOOGLE ANALYTICS - asynchroneous: http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html --]
  [#if cfg.gbifAnalytics || (cfg.analyticsKey!"")?length>1] 
-@@ -60,11 +61,11 @@
+@@ -60,11 +60,11 @@
  [/#if]
  
  <script type="text/javascript">
@@ -186,7 +188,7 @@ index 1a07748..86ed9ed 100644
        h1 {
        	color: #077A2D;
 diff --git a/WEB-INF/pages/inc/menu.ftl b/WEB-INF/pages/inc/menu.ftl
-index 6064adc..b34580f 100644
+index 6064adc..4c9cec5 100644
 --- a/WEB-INF/pages/inc/menu.ftl
 +++ b/WEB-INF/pages/inc/menu.ftl
 @@ -1,93 +1,61 @@
@@ -288,7 +290,7 @@ index 6064adc..b34580f 100644
 +				<div id="header_content">
 +					<div id="nav_top">
 +						[#if (Session.curr_user)??]
-+							[@s.text name="menu.loggedin"][@s.param]<em>${Session.curr_user.email}</em>[/@s.param][/@s.text] | <a href="${baseURL}/account.do">[@s.text name="menu.account"/]</a> | <a href="${baseURL}/logout.do">[@s.text name="menu.logout"/]</a></li>
++							[@s.text name="menu.loggedin"][@s.param]<em>${Session.curr_user.email}</em>[/@s.param][/@s.text] | <a href="${baseURL}/account.do">[@s.text name="menu.account"/]</a> | <a href="${baseURL}/logout.do">[@s.text name="menu.logout"/]</a>
 +						[#else]
 +							<form id="login-form" action="${baseURL}/login.do" method="post">
 +								<input type="text" size="25" name="email" value="email" class="form-reset" />
@@ -381,9 +383,18 @@ index 6064adc..b34580f 100644
  
  			<div class="grid_24 region region-content" id="region-content">
 diff --git a/WEB-INF/pages/macros/resourcesTable.ftl b/WEB-INF/pages/macros/resourcesTable.ftl
-index ea3953f..a822678 100644
+index ea3953f..cff602f 100644
 --- a/WEB-INF/pages/macros/resourcesTable.ftl
 +++ b/WEB-INF/pages/macros/resourcesTable.ftl
+@@ -7,7 +7,7 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
+ - sortOrder: The sort order of the columnToSortOn
+ -->
+ <#macro resourcesTable shownPublicly numResourcesShown sEmptyTable columnToSortOn sortOrder>
+-<script type="text/javascript" charset="utf-8">
++<script type="text/javascript">
+     <#assign emptyString="--">
+     <#assign dotDot="..">
+ 
 @@ -15,16 +15,15 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
      var aDataSet = [
        <#list resources as r>
@@ -541,10 +552,10 @@ index d741010..b579a3a 100644
  			showReport=false;
  			$("#toggleReport").text("<@s.text name='manage.overview.published.see.report'/>");
 diff --git a/WEB-INF/pages/portal/home.ftl b/WEB-INF/pages/portal/home.ftl
-index 0c92482..48b8623 100644
+index 0c92482..b5fa865 100644
 --- a/WEB-INF/pages/portal/home.ftl
 +++ b/WEB-INF/pages/portal/home.ftl
-@@ -1,12 +1,14 @@
+@@ -1,18 +1,20 @@
  <#escape x as x?html>
    <#include "/WEB-INF/pages/inc/header.ftl">
 +<script type="text/javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
@@ -562,8 +573,15 @@ index 0c92482..48b8623 100644
  <div id="rtableContainer"></div>
  
  <!-- RSS Feed shown if there are resources -->
+   <#if (resources?size>0)>
+   <p>
+-    <@s.text name="portal.home.feed"><@s.param>${baseURL}/rss.do</@s.param></@s.text> <img id="rssImage" src="${baseURL}/images/rss.png"/>.
++    <@s.text name="portal.home.feed"><@s.param>${baseURL}/rss.do</@s.param></@s.text> <img id="rssImage" src="${baseURL}/images/rss.png" alt="RSS"/>.
+   </p>
+   <#else>
+   <p><@s.text name="portal.home.no.public"/></p>
 diff --git a/WEB-INF/pages/portal/resource.ftl b/WEB-INF/pages/portal/resource.ftl
-index e24e5b1..752701c 100644
+index e24e5b1..fdbc094 100644
 --- a/WEB-INF/pages/portal/resource.ftl
 +++ b/WEB-INF/pages/portal/resource.ftl
 @@ -20,6 +20,7 @@
@@ -574,6 +592,33 @@ index e24e5b1..752701c 100644
  <#include "/WEB-INF/pages/inc/menu.ftl">
  
  <div class="grid_24">
+@@ -33,7 +34,7 @@
+ </div>
+ <div id="resourcelogo">
+ 	<#if eml.logoUrl?has_content>
+-	<img src="${eml.logoUrl}" />
++	<img src="${eml.logoUrl}" alt="${eml.title!resource.shortname}"  />
+ 	</#if>
+ </div>
+ <p>
+@@ -83,7 +84,7 @@
+                   </#if>
+                     <tr>
+                         <th><@s.text name='portal.resource.published.eml'/></th>
+-                        <td><a href="${baseURL}/eml.do?r=${resource.shortname}&v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
++                        <td><a href="${baseURL}/eml.do?r=${resource.shortname}&amp;v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+                                onClick="_gaq.push(['_trackEvent', 'EML', 'Download', '${resource.shortname}']);"><@s.text name='portal.resource.download'/></a>
+                             (${emlFormattedSize})
+                         </td>
+@@ -91,7 +92,7 @@
+ 
+                     <tr>
+                         <th><@s.text name='portal.resource.published.rtf'/></th>
+-                        <td><a href="${baseURL}/rtf.do?r=${resource.shortname}&v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
++                        <td><a href="${baseURL}/rtf.do?r=${resource.shortname}&amp;v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+                                onClick="_gaq.push(['_trackEvent', 'RTF', 'Download', '${resource.shortname}']);"><@s.text name='portal.resource.download'/></a>
+                             (${rtfFormattedSize})
+                         </td>
 diff --git a/images/dataTables/sort_asc_red.png b/images/dataTables/sort_asc_red.png
 new file mode 100644
 index 0000000000000000000000000000000000000000..44db5a6cd890a6251c3ede87783b8ed19a7ef232
