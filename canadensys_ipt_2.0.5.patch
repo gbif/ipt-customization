@@ -1,4 +1,4 @@
-From 30ea8c94a92af8d8b6cc677de4974a3f42edefa5 Mon Sep 17 00:00:00 2001
+From 40752064961a6c4f8c8e3766ec895e3c4fd7d531 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -7,21 +7,22 @@ Subject: [PATCH] Canadensys styling
  .gitignore                              |    1 +
  WEB-INF/datadir.location                |    1 -
  WEB-INF/pages/inc/footer.ftl            |   42 +++----
- WEB-INF/pages/inc/header.ftl            |   20 ++--
+ WEB-INF/pages/inc/header.ftl            |   29 ++---
  WEB-INF/pages/inc/header_setup.ftl      |    4 +-
- WEB-INF/pages/inc/menu.ftl              |  165 ++++++++++++-------------
- WEB-INF/pages/macros/resourcesTable.ftl |   10 +-
+ WEB-INF/pages/inc/menu.ftl              |  168 +++++++++++++-------------
+ WEB-INF/pages/macros/resourcesTable.ftl |   11 +-
  WEB-INF/pages/manage/eml/parties.ftl    |    3 +
+ WEB-INF/pages/manage/home.ftl           |   15 ++-
  WEB-INF/pages/manage/mapping.ftl        |   24 ++--
  WEB-INF/pages/manage/overview.ftl       |    3 +-
- WEB-INF/pages/portal/home.ftl           |    6 +-
+ WEB-INF/pages/portal/home.ftl           |    8 +-
  WEB-INF/pages/portal/resource.ftl       |    1 +
  images/dataTables/sort_asc_red.png      |  Bin 0 -> 266 bytes
  images/dataTables/sort_desc_red.png     |  Bin 0 -> 273 bytes
  js/custom.js                            |   18 +++
  styles/custom.css                       |  199 ++++++++++++++++++++++++++++---
  styles/custom.css.orig                  |   36 ++++++
- 17 files changed, 380 insertions(+), 153 deletions(-)
+ 18 files changed, 392 insertions(+), 171 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
@@ -99,10 +100,10 @@ index e5b49c4..30989ac 100644
  		</div>
  
 diff --git a/WEB-INF/pages/inc/header.ftl b/WEB-INF/pages/inc/header.ftl
-index 284de8e..90f74a7 100644
+index 284de8e..84ceb57 100644
 --- a/WEB-INF/pages/inc/header.ftl
 +++ b/WEB-INF/pages/inc/header.ftl
-@@ -12,31 +12,33 @@
+@@ -12,32 +12,33 @@
  <!DOCTYPE html>
  <html xmlns="http://www.w3.org/1999/xhtml">
      <head>
@@ -141,10 +142,28 @@ index 284de8e..90f74a7 100644
  	<script type="text/javascript" src="${baseURL}/js/jquery/jquery-ui.min-1.8.3.js"></script>
  	<script type="text/javascript" src="${baseURL}/js/global.js"></script>
  	<script type="text/javascript" src="${baseURL}/js/sorttable.js"></script>
+- 
 +	<script type="text/javascript" src="${baseURL}/js/custom.js"></script>
-  
  
  [#-- GOOGLE ANALYTICS - asynchroneous: http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html --]
+ [#if cfg.gbifAnalytics || (cfg.analyticsKey!"")?length>1] 
+@@ -60,11 +61,11 @@
+ [/#if]
+ 
+ <script type="text/javascript">
+-$(document).ready(function(){
++$(function(){
+ [#-- see global.js for function defs --]
+-    initForm();
+-	initMenu();
++  initForm();
++  initMenu();
++  custom_langs("${localeLanguage}","${baseURL}");
+ });
+ </script>
+-
+ [#assign currentMenu = "home"]
+\ No newline at end of file
 diff --git a/WEB-INF/pages/inc/header_setup.ftl b/WEB-INF/pages/inc/header_setup.ftl
 index 1a07748..86ed9ed 100644
 --- a/WEB-INF/pages/inc/header_setup.ftl
@@ -167,17 +186,16 @@ index 1a07748..86ed9ed 100644
        h1 {
        	color: #077A2D;
 diff --git a/WEB-INF/pages/inc/menu.ftl b/WEB-INF/pages/inc/menu.ftl
-index 6064adc..9d3e2c1 100644
+index 6064adc..b34580f 100644
 --- a/WEB-INF/pages/inc/menu.ftl
 +++ b/WEB-INF/pages/inc/menu.ftl
-@@ -1,93 +1,66 @@
+@@ -1,93 +1,61 @@
  [#ftl]
- <script type="text/javascript">
- 	$(document).ready(function(){
+-<script type="text/javascript">
+-	$(document).ready(function(){
 -  		langs("${localeLanguage}","${baseURL}");
-+  		custom_langs("${localeLanguage}","${baseURL}");
- 	});
- </script>
+-	});
+-</script>
  </head>
   	<body>
 +
@@ -318,7 +336,7 @@ index 6064adc..9d3e2c1 100644
  		    <section id="section-content" class="section section-content">
            <div id="zone-content-wrapper" class="zone-wrapper zone-content-wrapper clearfix">
              <div id="zone-content" class="zone zone-content clearfix container_24">
-@@ -97,7 +70,7 @@
+@@ -97,7 +65,7 @@
  			<aside class="grid_6 push_18">
  			<div class="clearfix" id="sidebar">
  				<h2>[@s.text name='manage.metadata.section' /]</h2>
@@ -327,7 +345,7 @@ index 6064adc..9d3e2c1 100644
  				[#list ["basic", "geocoverage", "taxcoverage","tempcoverage", "keywords", "parties", "project", "methods", "citations", "collections", "physical", "additional"] as it]
  				 <li[#if currentSideMenu?? && currentSideMenu==it] class="current"[#else] class="sidebar"[/#if]><a href="metadata-${it}.do?r=${resource.shortname!r!}">[@s.text name="submenu.${it}"/]</a></li>
  				[/#list]
-@@ -107,6 +80,34 @@
+@@ -107,6 +75,34 @@
  
  			<div class="grid_18 pull_6 region region-content" id="region-content">
  
@@ -363,7 +381,7 @@ index 6064adc..9d3e2c1 100644
  
  			<div class="grid_24 region region-content" id="region-content">
 diff --git a/WEB-INF/pages/macros/resourcesTable.ftl b/WEB-INF/pages/macros/resourcesTable.ftl
-index ea3953f..cb55ff1 100644
+index ea3953f..a822678 100644
 --- a/WEB-INF/pages/macros/resourcesTable.ftl
 +++ b/WEB-INF/pages/macros/resourcesTable.ftl
 @@ -15,16 +15,15 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
@@ -387,7 +405,15 @@ index ea3953f..cb55ff1 100644
        </#list>
      ];
  
-@@ -57,7 +56,6 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
+@@ -34,6 +33,7 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
+             "aaData": aDataSet,
+             "iDisplayLength": ${numResourcesShown},
+             "bLengthChange": false,
++            "bPaginate" : false,
+             "bAutoWidth": false,
+             "oLanguage": {
+                 "sEmptyTable": "<@s.text name="${sEmptyTable}"/>",
+@@ -57,7 +57,6 @@ resourcesTable macro: Generates a data table that has searching, pagination, and
                  { "sTitle": "<@s.text name="portal.home.records"/>", "bSearchable": false},
                  { "sTitle": "<@s.text name="manage.home.last.modified"/>", "bSearchable": false},
                  { "sTitle": "<@s.text name="manage.home.last.publication" />", "bSearchable": false},
@@ -410,6 +436,36 @@ index 0970af1..d692a46 100644
  		  	</div>
  		</#list>
  	</div>
+diff --git a/WEB-INF/pages/manage/home.ftl b/WEB-INF/pages/manage/home.ftl
+index 2f3cc36..7cabbfa 100644
+--- a/WEB-INF/pages/manage/home.ftl
++++ b/WEB-INF/pages/manage/home.ftl
+@@ -1,18 +1,17 @@
+ <#escape x as x?html>
+   <#include "/WEB-INF/pages/inc/header.ftl">
++  <script type="text/javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
++  <script type="text/javascript">
++      $(function(){
++          initHelp();
++      });
++  </script>
+ <title><@s.text name="title"/></title>
+   <#assign currentMenu = "manage"/>
+   <#include "/WEB-INF/pages/inc/menu.ftl">
+   <#include "/WEB-INF/pages/macros/forms.ftl"/>
+   <#include "/WEB-INF/pages/macros/resourcesTable.ftl"/>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.js"></script>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
+-<script type="text/javascript">
+-    $(document).ready(function(){
+-        initHelp();
+-    });
+-</script>
+-  <@resourcesTable shownPublicly=false numResourcesShown=10 sEmptyTable="manage.home.resources.none" columnToSortOn=6 sortOrder="desc"/>
++  <@resourcesTable shownPublicly=false numResourcesShown=50 sEmptyTable="manage.home.resources.none" columnToSortOn=6 sortOrder="desc"/>
+ 
+ <h1 class="rtableTitle"><@s.text name="manage.home.title"/></h1>
+ <div id="rtableContainer"></div>
 diff --git a/WEB-INF/pages/manage/mapping.ftl b/WEB-INF/pages/manage/mapping.ftl
 index f4c2aa3..6ff2770 100644
 --- a/WEB-INF/pages/manage/mapping.ftl
@@ -485,7 +541,7 @@ index d741010..b579a3a 100644
  			showReport=false;
  			$("#toggleReport").text("<@s.text name='manage.overview.published.see.report'/>");
 diff --git a/WEB-INF/pages/portal/home.ftl b/WEB-INF/pages/portal/home.ftl
-index 0c92482..a817625 100644
+index 0c92482..48b8623 100644
 --- a/WEB-INF/pages/portal/home.ftl
 +++ b/WEB-INF/pages/portal/home.ftl
 @@ -1,12 +1,14 @@
@@ -497,7 +553,8 @@ index 0c92482..a817625 100644
    <#include "/WEB-INF/pages/macros/resourcesTable.ftl"/>
 -<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.js"></script>
 -<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
-   <@resourcesTable shownPublicly=true numResourcesShown=20 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
+-  <@resourcesTable shownPublicly=true numResourcesShown=20 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
++  <@resourcesTable shownPublicly=true numResourcesShown=50 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
  <h1 class="rtableTitle"><@s.text name="portal.home.title"/></h1>
 +
 +<p><#if localeLanguage=='fr'>Suivez <a href="http://www.canadensys.net/data-publication-guide?lang=fr">notre guide en 7 étapes</a> pour publier votre propre jeu de données sur ce dépôt.<#else>Follow <a href="http://www.canadensys.net/data-publication-guide">our 7-step guide</a> to publish your own dataset on this repository.</#if></p>
