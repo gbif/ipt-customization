@@ -1,4 +1,4 @@
-From aedc0624c5df07810dd29d52fe99efb49acf70c1 Mon Sep 17 00:00:00 2001
+From 98a15ea4a722432dde304c6c20b82d598c6608db Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -188,7 +188,7 @@ index 1a07748..86ed9ed 100644
        h1 {
        	color: #077A2D;
 diff --git a/WEB-INF/pages/inc/menu.ftl b/WEB-INF/pages/inc/menu.ftl
-index 6064adc..4c9cec5 100644
+index 6064adc..e794b51 100644
 --- a/WEB-INF/pages/inc/menu.ftl
 +++ b/WEB-INF/pages/inc/menu.ftl
 @@ -1,93 +1,61 @@
@@ -365,7 +365,7 @@ index 6064adc..4c9cec5 100644
 +		[#if eml.physicalData?has_content]
 +			[#list eml.physicalData as item]
 +			[#if item.distributionUrl?starts_with('http://data.canadensys.net/explorer/d/')]
-+			<p><a class="round big_button[#if localeLanguage=='en'] multi_line[/#if]" id="explorer_link" href="${item.distributionUrl}[#if localeLanguage=='fr']&lang=fr[/#if]" target="_blank" onClick="_gaq.push(['_trackEvent', 'Canadensys explorer', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir données sur Canadensys[#else]Explore this dataset on Canadensys[/#if]</a></p>
++			<p><a class="round big_button[#if localeLanguage=='en'] multi_line[/#if]" id="explorer_link" href="${item.distributionUrl}[#if localeLanguage=='fr']?lang=fr[/#if]" target="_blank" onClick="_gaq.push(['_trackEvent', 'Canadensys explorer', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir données sur Canadensys[#else]Explore this dataset on Canadensys[/#if]</a></p>
 +			[/#if]
 +			[/#list]
 +			
