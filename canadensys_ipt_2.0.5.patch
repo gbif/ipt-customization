@@ -1,27 +1,27 @@
-From 98a15ea4a722432dde304c6c20b82d598c6608db Mon Sep 17 00:00:00 2001
+From 0d42b5ae82822bdb0bece8b981d8f7394dac8173 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
 
 ---
- .gitignore                              |    1 +
- WEB-INF/datadir.location                |    1 -
- WEB-INF/pages/inc/footer.ftl            |   43 +++----
- WEB-INF/pages/inc/header.ftl            |   30 ++---
- WEB-INF/pages/inc/header_setup.ftl      |    4 +-
- WEB-INF/pages/inc/menu.ftl              |  168 +++++++++++++-------------
- WEB-INF/pages/macros/resourcesTable.ftl |   13 +-
- WEB-INF/pages/manage/eml/parties.ftl    |    3 +
- WEB-INF/pages/manage/home.ftl           |   15 ++-
- WEB-INF/pages/manage/mapping.ftl        |   24 ++--
- WEB-INF/pages/manage/overview.ftl       |    3 +-
- WEB-INF/pages/portal/home.ftl           |   10 +-
- WEB-INF/pages/portal/resource.ftl       |    7 +-
- images/dataTables/sort_asc_red.png      |  Bin 0 -> 266 bytes
- images/dataTables/sort_desc_red.png     |  Bin 0 -> 273 bytes
- js/custom.js                            |   18 +++
- styles/custom.css                       |  199 ++++++++++++++++++++++++++++---
- styles/custom.css.orig                  |   36 ++++++
+ .gitignore                              |   1 +
+ WEB-INF/datadir.location                |   1 -
+ WEB-INF/pages/inc/footer.ftl            |  43 +++----
+ WEB-INF/pages/inc/header.ftl            |  30 ++---
+ WEB-INF/pages/inc/header_setup.ftl      |   4 +-
+ WEB-INF/pages/inc/menu.ftl              | 168 +++++++++++++--------------
+ WEB-INF/pages/macros/resourcesTable.ftl |  13 +--
+ WEB-INF/pages/manage/eml/parties.ftl    |   3 +
+ WEB-INF/pages/manage/home.ftl           |  15 ++-
+ WEB-INF/pages/manage/mapping.ftl        |  24 ++--
+ WEB-INF/pages/manage/overview.ftl       |   3 +-
+ WEB-INF/pages/portal/home.ftl           |  10 +-
+ WEB-INF/pages/portal/resource.ftl       |   7 +-
+ images/dataTables/sort_asc_red.png      | Bin 0 -> 266 bytes
+ images/dataTables/sort_desc_red.png     | Bin 0 -> 273 bytes
+ js/custom.js                            |  18 +++
+ styles/custom.css                       | 199 +++++++++++++++++++++++++++++---
+ styles/custom.css.orig                  |  36 ++++++
  18 files changed, 398 insertions(+), 177 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
@@ -46,7 +46,7 @@ index 856c0e1..0000000
 -/Users/dshorthouse/Documents/Canadensys/ipt-data
 \ No newline at end of file
 diff --git a/WEB-INF/pages/inc/footer.ftl b/WEB-INF/pages/inc/footer.ftl
-index e5b49c4..e0c5079 100644
+index e5b49c4..08837e3 100644
 --- a/WEB-INF/pages/inc/footer.ftl
 +++ b/WEB-INF/pages/inc/footer.ftl
 @@ -1,28 +1,31 @@
@@ -83,7 +83,7 @@ index e5b49c4..e0c5079 100644
 +		<p>Most Canadensys participants have dedicated their data to the <a href="http://creativecommons.org/publicdomain/zero/1.0/">public domain</a>.</p>
 +		<ul>
 +			<li><a href="http://www.canadensys.net/norms">Data usage norms</a></li>
-+			<li>Powered by <a href="http://code.google.com/p/gbif-providertoolkit/">IPT version ${cfg.version!"???"}</a> &copy; <a href="http://www.gbif.org">GBIF</a></li>
++			<li>Powered by <a href="http://code.google.com/p/gbif-providertoolkit/">IPT</a> &copy; <a href="http://www.gbif.org">GBIF</a></li>
 +		</ul>
 +	</div>
 +	<div class="footer_section right">
@@ -188,7 +188,7 @@ index 1a07748..86ed9ed 100644
        h1 {
        	color: #077A2D;
 diff --git a/WEB-INF/pages/inc/menu.ftl b/WEB-INF/pages/inc/menu.ftl
-index 6064adc..e794b51 100644
+index 6064adc..3408b1b 100644
 --- a/WEB-INF/pages/inc/menu.ftl
 +++ b/WEB-INF/pages/inc/menu.ftl
 @@ -1,93 +1,61 @@
@@ -370,7 +370,7 @@ index 6064adc..e794b51 100644
 +			[/#list]
 +			
 +			[#list eml.physicalData as item]
-+			[#if item.distributionUrl?starts_with('http://data.gbif.org/datasets/')]
++			[#if item.distributionUrl?starts_with('http://www.gbif.org/dataset/')]
 +			<p><a class="round big_button" id="gbif_link" href="${item.distributionUrl}" target="_blank" onClick="_gaq.push(['_trackEvent', 'GBIF data portal', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir données sur GBIF[#else]Explore this dataset on GBIF[/#if]</a></p>
 +			[/#if]
 +			[/#list]
@@ -936,5 +936,5 @@ index 0000000..c00f1b9
 +}
 \ No newline at end of file
 -- 
-1.7.10.2 (Apple Git-33)
+1.8.3.4 (Apple Git-47)
 
