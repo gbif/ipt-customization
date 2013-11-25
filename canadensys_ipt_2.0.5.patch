@@ -1,4 +1,4 @@
-From 0d42b5ae82822bdb0bece8b981d8f7394dac8173 Mon Sep 17 00:00:00 2001
+From fbdd79186cc895bb05e5dbc6e22806161057342a Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -11,6 +11,7 @@ Subject: [PATCH] Canadensys styling
  WEB-INF/pages/inc/header_setup.ftl      |   4 +-
  WEB-INF/pages/inc/menu.ftl              | 168 +++++++++++++--------------
  WEB-INF/pages/macros/resourcesTable.ftl |  13 +--
+ WEB-INF/pages/manage/eml/basic.ftl      |   1 -
  WEB-INF/pages/manage/eml/parties.ftl    |   3 +
  WEB-INF/pages/manage/home.ftl           |  15 ++-
  WEB-INF/pages/manage/mapping.ftl        |  24 ++--
@@ -22,7 +23,7 @@ Subject: [PATCH] Canadensys styling
  js/custom.js                            |  18 +++
  styles/custom.css                       | 199 +++++++++++++++++++++++++++++---
  styles/custom.css.orig                  |  36 ++++++
- 18 files changed, 398 insertions(+), 177 deletions(-)
+ 19 files changed, 398 insertions(+), 178 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
@@ -432,6 +433,18 @@ index ea3953f..cff602f 100644
                  { "sTitle": "<@s.text name="manage.home.visible"/>", "bSearchable": false, "bVisible": <#if shownPublicly>false<#else>true</#if>},
                  { "sTitle": "<@s.text name="portal.home.author"/>", "bVisible": <#if shownPublicly>false<#else>true</#if>}
              ],
+diff --git a/WEB-INF/pages/manage/eml/basic.ftl b/WEB-INF/pages/manage/eml/basic.ftl
+index 513f882..dfac920 100644
+--- a/WEB-INF/pages/manage/eml/basic.ftl
++++ b/WEB-INF/pages/manage/eml/basic.ftl
+@@ -260,7 +260,6 @@
+ 	<input name="r" type="hidden" value="${resource.shortname}" />
+ </form>
+ </div>
+-</div>
+ 
+ <#include "/WEB-INF/pages/inc/footer.ftl">
+ </#escape>
 diff --git a/WEB-INF/pages/manage/eml/parties.ftl b/WEB-INF/pages/manage/eml/parties.ftl
 index 0970af1..d692a46 100644
 --- a/WEB-INF/pages/manage/eml/parties.ftl
