@@ -1,4 +1,4 @@
-From fbdd79186cc895bb05e5dbc6e22806161057342a Mon Sep 17 00:00:00 2001
+From 9ad02981e680539f93946ca2969bfc8e6bd0a384 Mon Sep 17 00:00:00 2001
 From: David Shorthouse <davidpshorthouse@gmail.com>
 Date: Wed, 3 Jul 2013 13:31:21 -0400
 Subject: [PATCH] Canadensys styling
@@ -14,7 +14,7 @@ Subject: [PATCH] Canadensys styling
  WEB-INF/pages/manage/eml/basic.ftl      |   1 -
  WEB-INF/pages/manage/eml/parties.ftl    |   3 +
  WEB-INF/pages/manage/home.ftl           |  15 ++-
- WEB-INF/pages/manage/mapping.ftl        |  24 ++--
+ WEB-INF/pages/manage/mapping.ftl        |  25 ++--
  WEB-INF/pages/manage/overview.ftl       |   3 +-
  WEB-INF/pages/portal/home.ftl           |  10 +-
  WEB-INF/pages/portal/resource.ftl       |   7 +-
@@ -23,7 +23,7 @@ Subject: [PATCH] Canadensys styling
  js/custom.js                            |  18 +++
  styles/custom.css                       | 199 +++++++++++++++++++++++++++++---
  styles/custom.css.orig                  |  36 ++++++
- 19 files changed, 398 insertions(+), 178 deletions(-)
+ 19 files changed, 398 insertions(+), 179 deletions(-)
  create mode 100644 .gitignore
  delete mode 100644 WEB-INF/datadir.location
  create mode 100644 images/dataTables/sort_asc_red.png
@@ -491,7 +491,7 @@ index 2f3cc36..7cabbfa 100644
  <h1 class="rtableTitle"><@s.text name="manage.home.title"/></h1>
  <div id="rtableContainer"></div>
 diff --git a/WEB-INF/pages/manage/mapping.ftl b/WEB-INF/pages/manage/mapping.ftl
-index f4c2aa3..6ff2770 100644
+index f4c2aa3..97dff4e 100644
 --- a/WEB-INF/pages/manage/mapping.ftl
 +++ b/WEB-INF/pages/manage/mapping.ftl
 @@ -189,23 +189,23 @@ $(document).ready(function(){
@@ -550,6 +550,15 @@ index f4c2aa3..6ff2770 100644
  	      	</div>
  	      	</#if>
  	      	</div>
+@@ -339,7 +339,6 @@ $(document).ready(function(){
+ 	</#list>
+ 
+ </form>
+-</div>
+ 
+ <#include "/WEB-INF/pages/inc/footer.ftl">
+ </#escape>
+\ No newline at end of file
 diff --git a/WEB-INF/pages/manage/overview.ftl b/WEB-INF/pages/manage/overview.ftl
 index d741010..b579a3a 100644
 --- a/WEB-INF/pages/manage/overview.ftl
