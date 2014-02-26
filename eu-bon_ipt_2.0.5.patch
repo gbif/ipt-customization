@@ -1,0 +1,1346 @@
+Index: src/main/resources/ApplicationResources_en.properties
+===================================================================
+--- src/main/resources/ApplicationResources_en.properties	(revision 4463)
++++ src/main/resources/ApplicationResources_en.properties	(working copy)
+@@ -91,7 +91,7 @@
+ # main menu items
+ menu.home=Home
+ menu.about=About
+-menu.manage=Manage Resources
++menu.manage=Manage
+ menu.admin=Administration
+ menu.account=Account
+ menu.logout=Logout
+Index: src/main/webapp/WEB-INF/pages/portal/resource.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/portal/resource.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/portal/resource.ftl	(working copy)
+@@ -20,6 +20,7 @@
+ <#include "/WEB-INF/pages/macros/forms.ftl"/>
+ <#include "/WEB-INF/pages/inc/header.ftl">
+ 	<title>${resource.title!resource.shortname!}</title>	
++<#assign sideMenuResource=true />
+ <#include "/WEB-INF/pages/inc/menu.ftl">
+ 
+ <div class="grid_24">
+@@ -33,7 +34,7 @@
+ </div>
+ <div id="resourcelogo">
+ 	<#if eml.logoUrl?has_content>
+-	<img src="${eml.logoUrl}" />
++	<img src="${eml.logoUrl}" alt="${eml.title!resource.shortname}"  />
+ 	</#if>
+ </div>
+ <p>
+@@ -83,7 +84,7 @@
+                   </#if>
+                     <tr>
+                         <th><@s.text name='portal.resource.published.eml'/></th>
+-                        <td><a href="${baseURL}/eml.do?r=${resource.shortname}&v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
++                        <td><a href="${baseURL}/eml.do?r=${resource.shortname}&amp;v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+                                onClick="_gaq.push(['_trackEvent', 'EML', 'Download', '${resource.shortname}']);"><@s.text name='portal.resource.download'/></a>
+                             (${emlFormattedSize})
+                         </td>
+@@ -91,7 +92,7 @@
+ 
+                     <tr>
+                         <th><@s.text name='portal.resource.published.rtf'/></th>
+-                        <td><a href="${baseURL}/rtf.do?r=${resource.shortname}&v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
++                        <td><a href="${baseURL}/rtf.do?r=${resource.shortname}&amp;v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+                                onClick="_gaq.push(['_trackEvent', 'RTF', 'Download', '${resource.shortname}']);"><@s.text name='portal.resource.download'/></a>
+                             (${rtfFormattedSize})
+                         </td>
+Index: src/main/webapp/WEB-INF/pages/portal/home.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/portal/home.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/portal/home.ftl	(working copy)
+@@ -1,18 +1,24 @@
+ <#escape x as x?html>
+   <#include "/WEB-INF/pages/inc/header.ftl">
++<script type="text/javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
+ <title><@s.text name="title"/></title>
+   <#include "/WEB-INF/pages/inc/menu.ftl">
+   <#include "/WEB-INF/pages/macros/resourcesTable.ftl"/>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.js"></script>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
+-  <@resourcesTable shownPublicly=true numResourcesShown=20 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
++  <@resourcesTable shownPublicly=true numResourcesShown=50 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
+ <h1 class="rtableTitle"><@s.text name="portal.home.title"/></h1>
++
++<p>
++
++TODO: 
++
++</p>
++
+ <div id="rtableContainer"></div>
+ 
+ <!-- RSS Feed shown if there are resources -->
+   <#if (resources?size>0)>
+   <p>
+-    <@s.text name="portal.home.feed"><@s.param>${baseURL}/rss.do</@s.param></@s.text> <img id="rssImage" src="${baseURL}/images/rss.png"/>.
++    <@s.text name="portal.home.feed"><@s.param>${baseURL}/rss.do</@s.param></@s.text> <img id="rssImage" src="${baseURL}/images/rss.png" alt="RSS"/>.
+   </p>
+   <#else>
+   <p><@s.text name="portal.home.no.public"/></p>
+Index: src/main/webapp/WEB-INF/pages/inc/header.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/inc/header.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/inc/header.ftl	(working copy)
+@@ -12,32 +12,32 @@
+ <!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml">
+     <head>
+-    [#assign iptIntro = "The Integrated Publishing Toolkit (IPT) is a tool developed by the Global Biodiversity Information Facility (GBIF) to provide an easy and efficient way of publishing biodiversity data." /]
+-    [#assign keywords = "GBIF, Global Biodiversity Information Facility, IPT, Integrated Publishing Toolkit, checklist, occurrence, metadata, DwC-A, Darwin Core, Darwin Core Archive, biodiversity data, data paper, EML" /]
++    [#assign iptIntro = "EU BON Demo Publisher toolkit" /]
++    [#assign keywords = "EU BON, integrated publishing toolkit, IPT, repository, checklist, occurrence, specimen" /]
+     [#if hostingOrganisation?exists && hostingOrganisation.name??]
+-      [#assign hostDescription = " This IPT is hosted by" + hostingOrganisation.name + "."/]
++      [#assign hostDescription = ". This IPT is hosted by " + hostingOrganisation.name + "."/]
+       [#assign hostKeyword = ", " + hostingOrganisation.name + "." /]
+     [/#if]
+-    <meta name="copyright" lang="en" content="GBIF" />
+     <meta name="description" lang="en" content="${iptIntro}${hostDescription!""}" />
+     <meta name="keywords" lang="en" content="${keywords}${hostKeyword!"."}" />
+-    <link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/reset.css" />
++	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/reset.css" />
+ 	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/text.css" />
+ 	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/960_24_col.css" />
+- 	<link rel="stylesheet" type="text/css" href="${baseURL}/styles/main.css" />
+-  <link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/jquery/dataTable.css"/>
+- 	<link rel="shortcut icon" href="${baseURL}/images/icons/favicon.ico" type="image/x-icon" />
+-	<link href="${baseURL}/rss.do" title="Latest Resources" rel="alternate" type="application/rss+xml" />
++	<link rel="stylesheet" type="text/css" href="${baseURL}/styles/main.css" />
++	<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/jquery/dataTable.css"/>
+ 	<link media="all" type="text/css" href="${baseURL}/styles/jquery/jquery-ui-1.8.3.css" rel="stylesheet" />
+   <!-- for css overrides needed for customizations -->
+-  <link rel="stylesheet" type="text/css" href="${baseURL}/styles/custom.css" />
++	<link rel="stylesheet" type="text/css" href="${baseURL}/styles/common.css"/>
++	<link rel="stylesheet" type="text/css" href="${baseURL}/styles/custom.css" />
++	<link rel="shortcut icon" href="${baseURL}/images/favicon_32x32.ico" type="image/x-icon" />
++	<link href="${baseURL}/rss.do" title="Latest Resources" rel="alternate" type="application/rss+xml" />
+   <!-- for support of old browsers, like IE8. See http://modernizr.com/docs/#html5inie -->
+   <script type="text/javascript" src="${baseURL}/js/modernizr.js"></script>
+ 	<script type="text/javascript" src="${baseURL}/js/jquery/jquery.min-1.5.1.js"></script>				
+ 	<script type="text/javascript" src="${baseURL}/js/jquery/jquery-ui.min-1.8.3.js"></script>
+ 	<script type="text/javascript" src="${baseURL}/js/global.js"></script>
+ 	<script type="text/javascript" src="${baseURL}/js/sorttable.js"></script>
+- 
++	<script type="text/javascript" src="${baseURL}/js/custom.js"></script>
+ 
+ [#-- GOOGLE ANALYTICS - asynchroneous: http://code.google.com/apis/analytics/docs/tracking/asyncTracking.html --]
+ [#if cfg.gbifAnalytics || (cfg.analyticsKey!"")?length>1] 
+@@ -60,11 +60,10 @@
+ [/#if]
+ 
+ <script type="text/javascript">
+-$(document).ready(function(){
++$(function(){
+ [#-- see global.js for function defs --]
+-    initForm();
+-	initMenu();
++  initForm();
++  initMenu();
+ });
+ </script>
+-
+ [#assign currentMenu = "home"]
+\ No newline at end of file
+Index: src/main/webapp/WEB-INF/pages/inc/menu.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/inc/menu.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/inc/menu.ftl	(working copy)
+@@ -1,69 +1,30 @@
+ [#ftl]
+-<script type="text/javascript">
+-	$(document).ready(function(){
+-  		langs("${localeLanguage}","${baseURL}");
+-	});
+-</script>
+ </head>
+  	<body>
++
++
+ 		<div class="page clearfix" id="page">
+ 			<header id="section-header" class="section section-header">
+-        <div id="zone-user-wrapper" class="zone-wrapper zone-user-wrapper clearfix">
+-        <div id="zone-user" class="zone zone-user clearfix container_24">
+-          <aside class="prefix_12 grid_12 region region-user-second account" id="region-user-second">
+-            <div class="region-inner region-user-second-inner">
+-      		    <ul id="language-menu">
+-      		      [#if (Session.curr_user)??]
+-                <li>[@s.text name="menu.loggedin"][@s.param]${Session.curr_user.email}[/@s.param][/@s.text]</li>
+-      		      <li[#if currentMenu=="account"] class="current"[/#if] ><a href="${baseURL}/account.do">[@s.text name="menu.account"/]</a></li>
+-      		      <li[#if currentMenu=="logout"] class="current"[/#if]><a href="${baseURL}/logout.do">[@s.text name="menu.logout"/]</a></li>
+-      			    [#else]
+-      		      <li>
+-        				  <form id="login-form" action="${baseURL}/login.do" method="post">
+-        				    <input type="text" size="25" name="email" value="email" class="form-reset" />
+-        		        <input type="password" size="20" name="password" value="password" class="form-reset" />
+-        		        [@s.submit key="portal.login" name="login-submit"/]
+-        				  </form>
+-      					</li>
+-      			    [/#if]
+-      				  <li>
+-      				  	<a href="#"><img src="${baseURL}/images/flags/flag_${localeLanguage}.png"/></a>
+-      					  <ul id="languages">
+-      						<!-- add more languages as translations become available. -->
+-      				  	<!-- To see more information go to langs method in global.js -->
+-      					  </ul>
+-      				  </li>
+-      				</ul>
+-            </div>
+-          </aside>
+-        </div>
+-        </div>
+-      <!-- show production logo only if ipt 1) .war was not built in test mode and 2) run in production mode -->
+-      <div id="zone-branding-wrapper" class="zone-wrapper zone-branding-wrapper clearfix">
+-        <div id="zone-branding" class="zone zone-branding clearfix container_24">
+-          <div class="grid_11 region region-branding" id="region-branding">
+-            <div class="region-inner region-branding-inner">
+-              <div class="branding-data clearfix">
+-                <div class="logo-img">
+-                  <a href="${baseURL}" rel="home" title="GBIF Logo" class="active">
+-                    <img src="${baseURL}/styles/logo.png" />
+-                  </a>
+-                </div>
+-                <hgroup class="site-name-slogan">
+-                  <h1 class="site-name"><a href="${baseURL}" rel="home" title="Home" class="active">GBIF Integrated Publishing Toolkit</a><span class="logoSuperscript">(IPT)</span></h1>
+-                  <h6 class="site-slogan">free and open access to biodiversity data</h6>
+-                [#if !cfg.devMode() && cfg.getRegistryType()=='PRODUCTION']
+-                [#else]
+-                  <img class="testmode" src="${baseURL}/styles/testmode.png" />
+-                [/#if]
+ 
+-                </hgroup>
+-              </div>
+-            </div>
+-          </div>
+-      		<div class="grid_13 region region-menu" id="region-menu">
+-            <nav>
+-      	      <ul>
++			<div id="header">
++				<div id="header_content">
++					<div id="nav_top">
++						[#if (Session.curr_user)??]
++							[@s.text name="menu.loggedin"][@s.param]<em>${Session.curr_user.email}</em>[/@s.param][/@s.text] | <a href="${baseURL}/account.do">[@s.text name="menu.account"/]</a> | <a href="${baseURL}/logout.do">[@s.text name="menu.logout"/]</a>
++						[#else]
++							<form id="login-form" action="${baseURL}/login.do" method="post">
++								<input type="text" size="25" name="email" value="email" class="form-reset" />
++								<input type="password" size="20" name="password" value="password" class="form-reset" />
++								[@s.submit key="portal.login" name="login-submit"/]
++							</form>
++					  	[/#if]
++					</div>				
++					<div id="nav_title"></div>
++					<div id="nav_portal">Demo installation</div>
++				</div>
++				<div id="menu">		
++       	      <ul>
++      	        <li class="menu_first">&nbsp;</li>
+       		    	<li[#if currentMenu=='home'] class="current"[/#if]><a href="${baseURL}/">[@s.text name="menu.home"/]</a></li>
+       		    	[#if managerRights]
+       		    	<li[#if currentMenu=='manage'] class="current"[/#if]><a href="${baseURL}/manage/">[@s.text name="menu.manage"/]</a></li>
+@@ -72,22 +33,25 @@
+       		    	<li[#if currentMenu=='admin'] class="current"[/#if]><a href="${baseURL}/admin/">[@s.text name="menu.admin"/]</a></li>
+       		    	[/#if]
+       		    	<li[#if currentMenu=='about'] class="current"[/#if]><a href="${baseURL}/about.do">[@s.text name="menu.about"/]</a></li>
+-      	      </ul>
+-      	    </nav>
+-      	  </div>
+-      	</div>
+-      		    <div id="search">
+-      		     [#--
+-      		        <form action="${baseURL}/search" method="get">
+-      		            <div>
+-      		                <input type="text" name="q" id="search-input" [#if !q??] class="form-reset" value='search ${searchText!" resources"}'[#else] value='${q}'[/#if] />
+-      		                <input class="default" type="submit" value="Search" id="search-submit" />
+-      		        	</div>
+-      		        </form>
+-      		     --]
+-      		    </div>
+-      	</div>
+-		    </header>
++      		    	<li class="menu_last">&nbsp;</li>
++      	      </ul>					
++				</div>
++				
++				
++				
++			</div>
++
++			[#--<div id="search">
++				<form action="${baseURL}/search" method="get">
++					<div>
++						<input type="text" name="q" id="search-input" [#if !q??] class="form-reset" value='search ${searchText!" resources"}'[#else] value='${q}'[/#if] />
++						<input class="default" type="submit" value="Search" id="search-submit" />
++					</div>
++				</form>
++			</div>--]
++
++		  </header>
++
+ 		    <section id="section-content" class="section section-content">
+           <div id="zone-content-wrapper" class="zone-wrapper zone-content-wrapper clearfix">
+             <div id="zone-content" class="zone zone-content clearfix container_24">
+@@ -97,7 +61,7 @@
+ 			<aside class="grid_6 push_18">
+ 			<div class="clearfix" id="sidebar">
+ 				<h2>[@s.text name='manage.metadata.section' /]</h2>
+-				<ul class="sidebar">
++				<ul class="sidebar round">
+ 				[#list ["basic", "geocoverage", "taxcoverage","tempcoverage", "keywords", "parties", "project", "methods", "citations", "collections", "physical", "additional"] as it]
+ 				 <li[#if currentSideMenu?? && currentSideMenu==it] class="current"[#else] class="sidebar"[/#if]><a href="metadata-${it}.do?r=${resource.shortname!r!}">[@s.text name="submenu.${it}"/]</a></li>
+ 				[/#list]
+@@ -107,6 +71,34 @@
+ 
+ 			<div class="grid_18 pull_6 region region-content" id="region-content">
+ 
++[#elseif sideMenuResource!false]
++
++<div id="side_bar">
++[#if resource.lastPublished??]
++	[#if (resource.recordsPublished>0)]
++	<p><a class="round big_button no_margin" id="dwc_archive" href="${baseURL}/archive.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'Archive', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T��l��charger donn��es[#else]Download dataset[/#if]</a></p>
++	[/#if]
++	<p><a class="round big_button multi_line" id="eml_file" href="${baseURL}/eml.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'EML', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T��l��charger metadonn��es en format EML[#else]Download metadata as an EML file[/#if]</a></p>
++	[#if rtfFileExisting]
++	<p><a class="round big_button multi_line" id="rtf_file" href="${baseURL}/rtf.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'RTF', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T��l��charger metadonn��es en format RTF[#else]Download metadata as an RTF file[/#if]</a></p>
++	[/#if]
++		[#if eml.physicalData?has_content]
++			[#list eml.physicalData as item]
++			[#if item.distributionUrl?starts_with('http://data.canadensys.net/explorer/d/')]
++			<p><a class="round big_button[#if localeLanguage=='en'] multi_line[/#if]" id="explorer_link" href="${item.distributionUrl}[#if localeLanguage=='fr']?lang=fr[/#if]" target="_blank" onClick="_gaq.push(['_trackEvent', 'Canadensys explorer', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir donn��es sur Canadensys[#else]Explore this dataset on Canadensys[/#if]</a></p>
++			[/#if]
++			[/#list]
++			
++			[#list eml.physicalData as item]
++			[#if item.distributionUrl?starts_with('http://www.gbif.org/dataset/')]
++			<p><a class="round big_button" id="gbif_link" href="${item.distributionUrl}" target="_blank" onClick="_gaq.push(['_trackEvent', 'GBIF data portal', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir donn��es sur GBIF[#else]Explore this dataset on GBIF[/#if]</a></p>
++			[/#if]
++			[/#list]
++		[/#if]
++[/#if]
++</div>
++
++			<div class="grid_18 region region-content" id="region-content">
+ [#else]
+ 
+ 			<div class="grid_24 region region-content" id="region-content">
+Index: src/main/webapp/WEB-INF/pages/inc/header_setup.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/inc/header_setup.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/inc/header_setup.ftl	(working copy)
+@@ -8,13 +8,15 @@
+ 		<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/text.css" />
+ 		<link rel="stylesheet" type="text/css" media="all" href="${baseURL}/styles/960_24_col.css" />
+  		<link rel="stylesheet" type="text/css" href="${baseURL}/styles/main.css"/>
+- 		<link rel="shortcut icon" href="${baseURL}/images/icons/favicon.ico" type="image/x-icon" />
++		<link rel="stylesheet" type="text/css" href="${baseURL}/styles/common.css"/>
+     <!-- for css overrides needed for customizations -->
+     <link rel="stylesheet" type="text/css" href="${baseURL}/styles/custom.css" />
++		<link rel="shortcut icon" href="${baseURL}/images/favicon.png" type="image/x-icon" />
+     <!-- for support of old browsers, like IE8. See http://modernizr.com/docs/#html5inie -->
+     <script type="text/javascript" src="${baseURL}/js/modernizr.js"></script>
+ 		<script type="text/javascript" src="${baseURL}/js/jquery/jquery.min-1.5.1.js"></script>
+ 		<script type="text/javascript" src="${baseURL}/js/global.js"></script>
++		<script type="text/javascript" src="${baseURL}/js/custom.js"></script>
+ 		<style>
+       h1 {
+       	color: #077A2D;
+Index: src/main/webapp/WEB-INF/pages/inc/footer.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/inc/footer.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/inc/footer.ftl	(working copy)
+@@ -1,28 +1,23 @@
+ 			</div>
+ 			</div>
++			</div>
+ 			</section>
+ 			<footer id="section-footer" class="section section-footer">
+-  			<div id="zone-footer-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">  
+-      		<div id="zone-footer" class="zone zone-footer clearfix container_24">
+-      			<ul>
+-			        <li>IPT <@s.text name="footer.version"/> ${cfg.version!"???"}</li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/"><@s.text name="footer.projectHome"/></a></li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/wiki/IPT2ManualNotes" target="_blank"><@s.text name="footer.useManual"/></a></li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/issues/list" target="_blank"><@s.text name="footer.bugReport"/></a></li>
+-			        <li><a href="http://code.google.com/p/gbif-providertoolkit/issues/entry?template=Feature%20request" target="_blank"><@s.text name="footer.featureRequest"/></a></li>
+-		        </ul>
+-      		</div>
+-  			</div>
+ 
+-  			<div id="zone-credit-wrapper" class="zone-wrapper zone-footer-wrapper clearfix">
+-          <div id="zone-credit" class="zone zone-credit clearfix container_24">
+-            <aside class="grid_16 region region-credit-first" id="region-credit-first">
+-              <div class="region-inner region-credit-first-inner">
+-                <p>&copy;2012 <a href="www.gbif.org">Global Biodiversity Information Facility</a>. Data publishers retain all rights to data.</p>
+-              </div>
+-            </aside>
+-          </div>
+-  			</div>
++<div id="footer" class="zone-wrapper zone-footer-wrapper clearfix">  
++	<div id="footer_content" class="zone zone-footer clearfix container_24">
++	<div class="footer_section left">
++		<a id="cc0" class="cc_logo" href="http://creativecommons.org/publicdomain/zero/1.0/" title="CC0 1.0 Universal Public Domain Dedication">&nbsp;</a>
++		<p>All data available in this installation is dedicated to the <a href="http://creativecommons.org/publicdomain/zero/1.0/">public domain</a>.</p>
++	</div>
++	<div class="footer_section right">
++		<a rel="license" id="cc_by" class="cc_logo" href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons Attribution 3.0 Unported">&nbsp;</a>
++		<p>All content on this website is licensed under <a rel="license" href="http://creativecommons.org/licenses/by/3.0/">CC-BY</a></p>
++	</div>
++	</div>
++</div>
++
++
+ 			</footer>		
+ 		</div>
+ 
+Index: src/main/webapp/WEB-INF/pages/manage/overview.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/manage/overview.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/manage/overview.ftl	(working copy)
+@@ -22,7 +22,8 @@
+ 	$('.confirmDeletion').jConfirmAction({question : "<#if resource.status=='REGISTERED'><@s.text name='manage.resource.delete.confirm.registered'/><#else><@s.text name='basic.confirm'/></#if>", yesAnswer : "<@s.text name='basic.yes'/>", cancelAnswer : "<@s.text name='basic.no'/>"});
+ 
+     var showReport=false;
+-	$("#toggleReport").click(function() {
++	$("#toggleReport").click(function(e) {
++		e.preventDefault();
+ 		if(showReport){
+ 			showReport=false;
+ 			$("#toggleReport").text("<@s.text name='manage.overview.published.see.report'/>");
+Index: src/main/webapp/WEB-INF/pages/manage/mapping.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/manage/mapping.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/manage/mapping.ftl	(working copy)
+@@ -189,23 +189,23 @@
+   <div class="body">
+   	<div class="infos">
+   		<img class="infoImg" src="${baseURL}/images/info.gif" />
+-		<div class="info">		
+-			<@s.text name='manage.mapping.info'/>
+-		</div>	
+-    		<select id="filterName" name="mapping.filter.column">
++			<div class="info">		
++				<@s.text name='manage.mapping.info'/>
++			</div>	
++    	<select id="filterName" name="mapping.filter.column">
+     		  <option value="" <#if !mapping.filter.column??> selected="selected"</#if>></option>
+     		<#list columns as c>
+     		  <option value="${c_index}" <#if c_index==mapping.filter.column!-999> selected="selected"</#if>>${c}</option>
+     		</#list>
+-    		</select>
++    	</select>
+ 		
+-    		<select id="filterComp" name="mapping.filter.comparator">
++    	<select id="filterComp" name="mapping.filter.comparator">
+     		  <option value="" <#if !mapping.filter.comparator??> selected="selected"</#if>></option>
+     		<#list comparators as c>
+     		  <option value="${c}" <#if c==mapping.filter.comparator!""> selected="selected"</#if>>${c}</option>
+     		</#list>
+-    		</select>
+-		    <input id="filterParam" name="mapping.filter.param" style="width:190px;" value="${mapping.filter.param!}" />
++    	</select>
++			<input id="filterParam" name="mapping.filter.param" style="width:190px;" value="${mapping.filter.param!}" />
+     </div>
+         <div>
+         	<p><@s.text name='manage.mapping.filter.text' /></p>
+@@ -297,19 +297,19 @@
+ 	      	</div>
+ 	      	<#if field.index?exists>
+ 	      	<div>
+-	      		<em><@s.text name='manage.mapping.sourceSample' /></em>:	      		
++	      		<p><em><@s.text name='manage.mapping.sourceSample' /></em>:	      		
+ 	      		<#assign first=true/>
+-	      		<#list peek as row><#if row??><#if row[field.index]?has_content><#if !first> | </#if><#assign first=false/>${row[field.index]}</#if></#if></#list>
++	      		<#list peek as row><#if row??><#if row[field.index]?has_content><#if !first> | </#if><#assign first=false/>${row[field.index]}</#if></#if></#list></p>
+ 	      	</div>
+ 	      	<div>
+-	      		<em><@s.text name='manage.mapping.translation' /></em>:
++	      		<p><em><@s.text name='manage.mapping.translation' /></em>:
+ 	      		<a href="translation.do?r=${resource.shortname}&rowtype=${p.extension.rowType}&mid=${mid}&term=${p.qualname}">
+ 	      		<#if (((field.translation?size)!0)>0)>
+ 	      		${(field.translation?size)!0} terms
+ 	      		<#else>
+ 	      		<button type="button" class="add" onclick="window.location.href"><@s.text name="button.add"/></button>
+ 	      		</#if>
+-	      		</a>
++	      		</a></p>
+ 	      	</div>
+ 	      	</#if>
+ 	      	</div>
+@@ -339,7 +339,6 @@
+ 	</#list>
+ 
+ </form>
+-</div>
+ 
+ <#include "/WEB-INF/pages/inc/footer.ftl">
+ </#escape>
+\ No newline at end of file
+Index: src/main/webapp/WEB-INF/pages/manage/home.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/manage/home.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/manage/home.ftl	(working copy)
+@@ -1,18 +1,17 @@
+ <#escape x as x?html>
+   <#include "/WEB-INF/pages/inc/header.ftl">
++  <script type="text/javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
++  <script type="text/javascript">
++      $(function(){
++          initHelp();
++      });
++  </script>
+ <title><@s.text name="title"/></title>
+   <#assign currentMenu = "manage"/>
+   <#include "/WEB-INF/pages/inc/menu.ftl">
+   <#include "/WEB-INF/pages/macros/forms.ftl"/>
+   <#include "/WEB-INF/pages/macros/resourcesTable.ftl"/>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.js"></script>
+-<script type="text/javascript" language="javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
+-<script type="text/javascript">
+-    $(document).ready(function(){
+-        initHelp();
+-    });
+-</script>
+-  <@resourcesTable shownPublicly=false numResourcesShown=10 sEmptyTable="manage.home.resources.none" columnToSortOn=6 sortOrder="desc"/>
++  <@resourcesTable shownPublicly=false numResourcesShown=50 sEmptyTable="manage.home.resources.none" columnToSortOn=6 sortOrder="desc"/>
+ 
+ <h1 class="rtableTitle"><@s.text name="manage.home.title"/></h1>
+ <div id="rtableContainer"></div>
+Index: src/main/webapp/WEB-INF/pages/manage/eml/parties.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/manage/eml/parties.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/manage/eml/parties.ftl	(working copy)
+@@ -67,7 +67,10 @@
+   				<div class="halfcolumn">
+ 		  			<@input name="eml.associatedParties[${item_index}].homepage" i18nkey="eml.associatedParties.homepage" />
+ 		  		</div>
++		<div class="clearfix"></div>
++		<div class="roles round">
+ 	  				<@select name="eml.associatedParties[${item_index}].role" i18nkey="eml.associatedParties.role" help="i18n" value="${eml.associatedParties[item_index].role!}" options=roles />
++	</div>
+ 		  	</div>
+ 		</#list>
+ 	</div>
+Index: src/main/webapp/WEB-INF/pages/manage/eml/basic.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/manage/eml/basic.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/manage/eml/basic.ftl	(working copy)
+@@ -260,7 +260,6 @@
+ 	<input name="r" type="hidden" value="${resource.shortname}" />
+ </form>
+ </div>
+-</div>
+ 
+ <#include "/WEB-INF/pages/inc/footer.ftl">
+ </#escape>
+Index: src/main/webapp/WEB-INF/datadir.location
+===================================================================
+--- src/main/webapp/WEB-INF/datadir.location	(revision 4463)
++++ src/main/webapp/WEB-INF/datadir.location	(working copy)
+@@ -1 +0,0 @@
+-${staging.datadir}
+\ No newline at end of file
+Index: src/main/webapp/js/custom.js
+===================================================================
+Index: src/main/webapp/styles/common.css
+===================================================================
+--- src/main/webapp/styles/common.css	(revision 0)
++++ src/main/webapp/styles/common.css	(revision 0)
+@@ -0,0 +1,571 @@
++/* Stylesheet for http://data.canadensys.net */
++
++/*-- HTML elements --*/
++
++html { height: 100%; }
++body {
++	background-color: white;
++	color: #22241e;
++	font-family: "Lucida Grande", Arial, Sans-Serif;
++	font-size: 10px;
++	height: 100%;
++	margin: 0;
++	min-width: 1024px;
++	padding: 0;
++	width: 100%;
++}
++
++a {
++	color: #23196F;
++	text-decoration: none;
++}
++a:hover {
++	color: #23196F;
++	text-decoration: underline;	
++}
++
++h1, h2, h3, h4, h5, h6 { line-height: 1.5em; }
++
++form {
++	margin: 0;
++	padding: 0;
++}
++
++input {
++	margin: 0;
++	padding: 0;
++}
++
++
++/*-- Header --*/
++
++#header {
++	background-color: #3E9788;
++	height: 180px;
++	position: relative;
++}
++
++#header_content {
++	color: #f9f9f9;
++	margin: 0 auto;
++	position: relative;
++	width: 690px;
++	z-index: 2;
++}
++#header_content a {
++	color: #f9f9f9;
++	text-decoration: none;	
++}
++#header_content a:hover { color: white; }
++
++#nav_top {
++	font-size: 1.2em;
++	margin: 0;
++	padding: 0;
++	position: absolute;
++	right: 0;
++	top: 3px;
++}
++#nav_top form {
++	display: inline;
++}
++
++#nav_title {
++  width: 300px;
++  height: 300px;
++	background: url("../images/EUBlogo.png") top left no-repeat;
++	float: left;
++	font-family: "Century Gothic", Arial, Sans-Serif;
++	font-size: 4.2em;
++	font-weight: normal;
++	letter-spacing: 0.08em;
++	margin: 0;
++	margin-top: 0px;
++	padding: 0;
++	padding-left: 0px; /* for logo */
++}
++#nav_title a { color: white !important; }
++
++#nav_portal {
++	float: right;
++	font-family: "Century Gothic", Arial, Sans-Serif;
++	font-size: 2.3em;
++	font-weight: normal;
++	letter-spacing: 0.08em;
++	margin: 0;
++	margin-top: 30px; /* 15 (#nav_title) + 15 */
++	padding: 0;
++	text-transform: lowercase;
++}
++#nav_portal .selected {
++	color: white;
++	font-weight: bold;
++}
++
++
++/*-- Topmenu --*/
++
++#menu {
++	bottom: 0px;
++	margin: 0 auto;
++	overflow: hidden;
++	position: absolute;
++	text-align: center;
++	text-transform: lowercase;
++	width: 100%; /* 690px; */
++	z-index: 2;
++}
++#menu ul {
++	clear: left;
++	float: left;
++	margin: 0;
++	left: 50%; /* http://matthewjamestaylor.com/centered-menus/ */
++	padding: 0;
++	position: relative;
++}
++#menu ul li {
++	background: -moz-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
++	background: -ms-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
++	background: -o-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
++	background: -webkit-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
++	background: linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
++	background-color :#22241e;	display: block;
++	float: left;
++	font-family: "Tw Cen MT", Arial, Sans-Serif;
++	font-size: 2.2em;
++	letter-spacing: 0.07em;
++	list-style: none;
++	padding: 4px 14px 7px 14px;
++	position: relative;
++	right: 50%;		
++}
++#menu ul li.menu_first {
++	border-top-left-radius: 5px;
++	margin: 0;
++	padding-left: 0;
++	padding-right: 0;
++	width: 9px;
++}
++#menu ul li.menu_last {
++	border-top-right-radius: 5px;
++	margin: 0;
++	padding-left: 0;
++	padding-right: 0;
++	width: 9px;
++}
++#menu ul li a { 
++	color: #ffffff;
++	text-decoration: none;
++}
++#menu ul li a:hover { color: #aaaaaa; }
++#menu ul li.current, #menu ul li.current_page_ancestor, #menu ul li.current_page_parent, #menu ul li.current_page_item  { background: white; }
++#menu ul li.current a, #menu ul li.current_page_ancestor a, #menu ul li.current_page_parent a, #menu ul li.current_page_item a { color: #23196F; }
++#menu ul li.menu_search { padding-right: 0!important; } /* currently not used */
++#menu ul li.menu_search a { /* looking glass */
++	background: url("http://data.canadensys.net/common/images/looking-glass.png") 10px 0px no-repeat;
++	margin: 0;
++	overflow: hidden;
++	padding: 0;
++	position: relative;
++}
++#menu ul li.menu_search a:hover { background: url("http://data.canadensys.net/common/images/looking-glass.png") 10px -25px no-repeat; }
++
++#searchform {
++	margin: 0;
++	padding: 0;
++}
++#searchform a {
++	margin: 0;
++	margin-top: -10px;
++	padding: 0;
++}
++#searchform input {
++	margin: 0;
++	padding: 0;
++}
++
++
++/*-- Containers and content --*/
++
++#body {
++	height: 90%; /* old IE */
++	margin: 36px auto;
++	min-width: 1024px;
++	position: relative;
++	width: 1024px; /* 36 + 616 (width of content) + 36 + 300 + 36 */
++}
++body > #body {
++	height: auto;
++	min-height: 90%; /* other browsers */
++}
++.fullscreen { width: 100% !important; }
++
++#content {
++	font-size: 1.35em;
++	font-weight: normal;
++	margin-right: 336px; /* for side_bar */
++	line-height: 1.5em;
++	padding: 0 36px;
++	text-align: left!important;
++}
++#content.no_side_bar {
++	margin-right: 0;
++}
++
++#ie { /* IE browser suggestion message */
++	color: #22241e;
++	font-size: 1.2em;
++	height: 24px;
++	margin: 0;
++	left: 36px;
++	padding: 0;
++	position: absolute;
++	top: -24px;
++}
++
++
++/*-- Sidemenu --*/
++
++#side_bar {
++	font-size: 1.5em;
++	padding-right: 36px;
++	position: absolute;
++	right: 0;
++	top: 0;
++	width: 300px;
++}
++
++.side_menu {
++	margin: 0 0 18px;
++	padding: 0!important; /* overwrite .round */
++}
++.side_menu li {
++	border-bottom: 1px solid #a8a7a5;
++	list-style: none;
++}
++.side_menu li:last-child { border-bottom: none!important; }
++.side_menu li.current_page_item > a, .side_menu li.current > a { background: url("http://data.canadensys.net/common/images/arrow.png") 3px 3px no-repeat transparent; }
++.side_menu a { /* warning: only use <a> elements in the .side_menu */
++	display: block;
++	padding: 6px 15px;
++}
++.side_menu a:hover {
++	background-color: #d3d3d3!important;
++	text-decoration: none;
++}
++.side_menu ul { /* sublevels */
++	background: white;
++	border-top: 1px solid #a8a7a5;
++	display: none; /* collapse menu by default */
++	padding: 0;
++}
++.side_menu .current_page_item ul, .side_menu .current_page_ancestor ul { display: block } /* Show submenu */
++.side_menu ul a { padding-left: 24px; }
++
++
++/*-- Footer --*/
++
++#footer {
++	background-color: #3E9788;
++	clear: both;
++	height: 90px;
++	width: 100%;
++	z-index: 1;
++}
++#footer_content {
++	clear: both;
++	color: #f9f9f9;
++	font-size: 12px;
++	margin: 0 auto;
++	padding: 18px 0 0; /* = 36px for content */
++	text-align: left;
++	width: 1024px;
++}
++#footer_content a {
++	color: white;
++	text-decoration: none;	
++}
++#footer_content a:hover { color: white; }
++
++.footer_section { width: 500px; }
++.footer_section p {
++	height: 31px;
++	margin: 0;
++}
++.footer_section ul {
++	clear: both;
++	list-style: none;
++	margin: 9px 0 0 0;
++	padding: 0;
++}
++.footer_section li { display: inline; }
++.footer_section li:after { content: " | "; }
++.footer_section li:last-child:after { content: ""; }
++
++.cc_logo {
++	display: block;
++	float: left;
++	margin-right: 18px;
++	height: 31px;
++	width: 88px;
++}
++#cc0 { background: url("http://data.canadensys.net/common/images/cc0-logo.png") no-repeat; }
++#cc_by { background: url("http://data.canadensys.net/common/images/cc-by-logo.png") no-repeat; }
++
++
++/*-- Feedback --*/
++
++#feedback_bar {
++	background: url("http://data.canadensys.net/common/images/feedback.png") no-repeat #22241e;
++	_display: none; /* IE 6 */
++	position: fixed;
++	right: 0;
++	top: 40%;
++	z-index: 60;
++}
++#feedback_bar a {
++	display: block;
++	height: 98px;
++	width: 27px;
++}
++
++
++/*-- Content & view classes --*/
++
++#content blockquote {
++	border-left: 3px solid #e7e7e7;
++	margin: 0;
++	padding-left: 15px;
++}
++#content a:visited { color: #6a0d00; }
++#content h1, #view h1 { font-size: 1.8em; }
++#content h2, #view h2 {
++	border-bottom: 2px solid #22241e;
++	font-size: 1.3em;
++}
++#content h1 .edit {
++	float: right;
++	font-size: 15px;
++}
++#content table {
++	border: none;
++	border-collapse: collapse;
++	font-size: 13.5px;
++	padding: 9px 0;
++	width: 100%;
++	text-align: left;
++}
++#content table th, #content table td {
++	padding-bottom: 3px;
++	vertical-align: top;
++}
++
++
++/*-- Align & clear classes --*/
++
++.align_left { text-align: left!important; }
++.align_center { text-align: center!important; }
++.align_right { text-align: right!important; }
++.left { float: left; }
++.right { float: right; }
++.clear { clear: both; }
++.no_margin { margin: 0; }
++.hidden { display: none; }
++.background_center td { background-position: top center!important; } /* to center icons */
++
++.clear_fix:after { /* http://css-tricks.com/snippets/css/clear-fix/ */
++	visibility: hidden;
++	display: block;
++	content: "";
++	clear: both;
++	height: 0;
++}
++* html .clear_fix { zoom: 1; } /* IE6 */
++*:first-child+html .clear_fix { zoom: 1; } /* IE7 */
++
++
++/*-- Custom classes --*/
++
++table.sortable th:not(.sorttable_nosort) {
++	color: #23196F;
++	cursor: pointer;
++}
++
++ul.custom_list {
++/*	margin: 15px 0; */
++	margin-left: 0; /* for IE */
++	padding: 0;
++}
++ul.custom_list.round { padding: 3px 9px; } /* redeclare: used for checklist builder */
++ul.custom_list li {
++/*	clear: both; */
++	list-style-type: none;
++}
++form.custom_form { padding: 0 36px; }
++form.custom_form input[type=text] {
++	font-size: 1em;
++	height: 21px;
++	margin-right: 18px; /* for button */
++	width: 330px;
++}
++form.custom_form select { font-size: 1em; }
++
++
++/*-- Other classes --*/
++
++.round { /* add to p, ul, li */
++	background-color: #e7e7e7;
++	border: 1px solid #a8a7a5;
++	border-radius: 5px;
++	padding: 3px 9px;
++}
++#tooltip {
++	background: #22241e;
++	border-radius: 5px;
++	color: white;
++	padding: 3px 9px;
++	position: absolute;
++	width: 300px;
++	z-index: 100;
++}
++#tooltip h3 {
++	font-size: 12px;
++	font-weight: normal;
++	margin: 0;
++}
++
++.warning {
++	background-color: #f1e300;
++	margin-bottom: 18px;
++}
++
++ul.buttons { padding: 0; } /* add to <ul> */
++ul.buttons li {
++	display: inline;
++	list-style: none;
++}
++ul.buttons a {
++	background: white;
++	border: 1px solid #a8a7a5;
++	border-radius: 5px;
++	color: #22241e!important;
++	cursor: pointer;
++	font-weight: bold;
++	margin: 0 2px;
++	padding: 6px 12px;
++}
++ul.buttons a:hover {
++	border: 1px solid #22241e;
++	text-decoration: none;
++}
++ul.buttons a.selected, .buttons a:active {
++	background-color: #e7e7e7;
++	-moz-box-shadow: inset 0 1px 2px #a8a7a5;
++	-webkit-box-shadow: inset 0 1px 2px #a8a7a5;
++	box-shadow: inset 0 1px 2px #a8a7a5;
++}
++
++.big_button { /* add to <a> (wrapped in <p>) */
++	background-color: #e7e7e7!important;
++	cursor: pointer;
++	display: block;
++	font-size: 15px;
++	height: 48px; /* 3 + 42 + 3 */
++	line-height: 48px;
++	padding: 0 63px 0 15px;  /* 48 icon + 9 padding */
++}
++p .big_button { margin: 0 0 18px; }
++.big_button:hover, .big_button a:hover, .big_button.selected {
++	background-color: #d3d3d3!important;
++	text-decoration: none;
++}
++.big_button.multi_line {
++	height: 100%!important;
++	line-height: 22px;
++	min-height: 48px;
++}
++
++ul.index {
++	font-style: italic;
++	line-height: 1.2em;	
++	margin: 0;
++	padding: 0 0 18px;
++}
++ul.index li {
++	font-size: 0.9em;
++	list-style: none;	
++}
++
++#search_box { margin-bottom: 18px; }
++
++
++/*-- Icons --*/
++#dwc_archive { background: url("http://data.canadensys.net/common/images/button-dwca.png") top right no-repeat; }
++#csv_file { background: url("http://data.canadensys.net/common/images/button-csv.png") top right no-repeat; }
++#eml_file { background: url("http://data.canadensys.net/common/images/button-eml.png") top right no-repeat; }
++#rtf_file { background: url("http://data.canadensys.net/common/images/button-rtf.png") top right no-repeat; }
++#explorer_link { background: url("http://data.canadensys.net/common/images/button-explorer.png") top right no-repeat; }
++#gbif_link { background: url("http://data.canadensys.net/common/images/button-gbif.png") top right no-repeat; }
++#print_page { background: url("http://data.canadensys.net/common/images/button-printer.png") top right no-repeat; }
++
++
++/*-- Reserved WordPress classes for images --*/
++
++.alignright { float: right; }
++.alignleft { float: left; }
++
++p img {
++	border: 0;
++	max-width: 100%;
++	padding: 0;
++}
++img.centered {
++	display: block;
++	margin-left: auto;
++	margin-right: auto;
++}
++img.alignright {
++	display: inline;
++	margin: 0 0 2px 7px;
++	padding: 4px;
++}
++img.alignleft {
++	display: inline;
++	margin: 0 7px 2px 0;
++	padding: 4px;
++}
++
++
++/*-- IPT overwrites --*/
++
++#resourcestable td, #resourcestable th { padding: 6px 0; }
++
++#resourcelogo {
++	float: left;
++}
++#resourcelogo img {
++	max-height: 64px;
++	max-width: 64px;
++	padding-bottom: 18px;
++	padding-right: 18px;
++}
++div.definition:after { /* clear_fix for mapping: http://code.google.com/p/gbif-providertoolkit/issues/detail?id=837 */
++	visibility: hidden;
++	display: block;
++	content: "";
++	clear: both;
++	height: 0;
++}
++* html .definition { zoom: 1; } /* IE6 */
++*:first-child+html .definition { zoom: 1; } /* IE7 */
++div.definition div.title, div.definition div.titleOverview { background-color: #e7e7e7; }
++div.details table th, div.details td { padding: 0px 9px 6px 0px; }
++div.details table th { width: 25%; }
++table#admintable { width: inherit; }
++table#admintable th, table#admintable td { vertical-align: middle; }
++
++/* Once http://code.google.com/p/gbif-providertoolkit/issues/detail?id=809 is addressed, remove the following: */
++div.textinline{ position: relative; }
++div.textinline img.infoImg{ position: absolute; }
++div.textinline .info{ top: 30px; }	
++div.textinline h2{ margin-left: 30px; }
+\ No newline at end of file
+Index: src/main/webapp/styles/custom.css
+===================================================================
+--- src/main/webapp/styles/custom.css	(revision 4460)
++++ src/main/webapp/styles/custom.css	(working copy)
+@@ -5,32 +5,196 @@
+  they can create their own modernizr.js with the desired supported elements. They only have to replace the 'default'
+  file with their own.
+ */
+-a {
+-  color: #008959;
++#page{
++  margin:0px;
++  min-height:100%;
++}
++
++Header {
++  height:120px;
++}
++#menu ul li {
++  margin:0px;
++  line-height:1.1em;
++}
++#nav_top{
++  line-height:1.2em;
++}
++#nav_title{
++  line-height:1.25em;
++}
++#nav_portal{
++  line-height:1.3em;
++}
++#section-header{
++  height: 160px;
++}
++#section-content{
++  width:100%;
++  padding:0px;
++  margin:36px 0px 90px;
++  font-size: 1.35em;
+   font-weight: normal;
++  line-height: 1.5em;
++  text-align: left;
++}
++#zone-content-wrapper{
++  margin:0px;
++  padding: 0 100px;
++  min-width:1024px;
++}
++#zone-content{
++  position:relative;
++  font-size:1.35em;
++  font-weight:normal;
++  line-height:1.5em;
++}
++
++/* Messages */
++.errorMessage, .actionMessage, .warnMessage{padding:5px;}
++.errorMessage li, .actionMessage li, .warnMessage li{margin-left:20px;padding-left:5px;}
++p.actionMessage, p.warnMessage{padding-left:30px;}
++
++#region-content{width:100%;padding:0px;margin:0px;}
++#region-content h1{color:#22241E;font-size:1.5em;padding:5px 0;}
++#region-content h1 span.superscript{font-size:1em;color:#333;}
++#region-content h1 a.tooltip{font-weight:bold; font-style:italic;}
++#region-content .edit{font-size:20px;}
++#region-content p {line-height:1.35em;}
++#region-menu{display:none;height:0px;}
++#region-content div.resourceOverview div.bodyOverview p{font-size:1em;}
++div.resourceOverview div.bodyOverview{width:auto;}
++div.resourceOverview div.bodyOverview div.details {width:600px;}
++div.resourceOverview div.bodyOverview div.details table th {width:200px;}
++div.resourceOverviewPortal{clear:both;}
++div.resourceOverviewPortal div.title {min-width:190px;}
++div.resourceOverviewPortal div.details {color:#666;}
++div.resourceOverviewPortal div.body th {width:160px;padding-left:0.5em;text-indent:-0.5em;font-weight:normal;}
++#zone-content{margin:0px;margin-bottom:36px;}
++#zone-content .grid_18{
++  margin-right: 336px;
++  width:auto;
++}
++#zone-content .grid_24 .grid_18{
++  margin-right:0px;
++  display:block;
++  float:none;
++}
++#region-content .grid_24{
++  float:none;
++  display:block;
++}
++div#sidebar{
++  margin-top:0px;
++  font-size:0.8em;
++  line-height:1.25em;
++}
++div#sidebar h2{
++  display:none;
++}
++div#sidebar ul{
++  padding:0px;
++}
++div#sidebar ul li {
++  border-bottom: 1px solid #A8A7A5;
++  padding:0px;
++}
++div#sidebar ul li.current {
++  padding-left:0px;
++  background-color: #d3d3d3;
++}
++div#sidebar ul li:last-child {
++    border-bottom: medium none;
++}
++div#sidebar ul li a{
++  display:block;
++  padding:6px 15px;
++}
++div#sidebar ul li a:hover{
++  text-decoration:none;
++  background-color: #d3d3d3;
++}
++div#sidebar ul li.current a {
++  font-weight:normal;
++  background-color:transparent;
++  background-image:url("../images/arrow.png");
++  background-position:3px 3px;
++  background-repeat:no-repeat no-repeat;
++}
++#side_bar{
++  padding-right:10px;
+ }
+-.green{
+-  color: #008959;
++div.third select {
++  max-width:90%;
++  width:85%;
+ }
+-#region-menu nav ul li.current {
+-  background-color: #008959;
++#rtable_filter{display:none;}
++.dataTables_filter{background-color:transparent;}
++table#rtable thead{background-color:transparent;}
++table#rtable tr{line-height:2em;}
++table.display thead th{color:#23196F;}
++table.display thead th.sorting_disabled{color:#22241E;}
++.sorting_asc, .sorting_desc{box-shadow:none;}
++.sorting_asc{
++  background:url("../images/dataTables/sort_asc_red.png") no-repeat scroll right center transparent;
+ }
+-#region-content h1 {
+-  color: #008959;
++.sorting_desc{
++  background:url("../images/dataTables/sort_desc_red.png") no-repeat scroll right center transparent;
+ }
+-div.groupmenu ul li a {
+-  color: #008959;
++tr.even td.sorting_1{background-color:transparent;}
++#rtable_info{display:none;}
++.paginate_disabled_previous, .paginate_disabled_next{cursor:default;}
++.container_24, .container_24 .grid_18, .container_24 .grid_24{width:auto;}
++.container_24 .suffix_6{padding:0px;width:100%;}
++.container_24 .grid_17{width:100%;}
++.container_24 .pull_6 {left:0px;}
++.container_24 .push_18{position:absolute;right:0px;left:auto;min-width:275px;}
++form.half{
++  width:50%;
+ }
+-table#rtable thead{
+-  background-color: #dbf0e8;
++.topForm label {
++    display: block;
++    font-size: 12px;
++    line-height:1.5em;
++    margin-top:10px;
+ }
+-.dataTables_filter {
+-  background-color: #dbf0e8;
++.topForm input {
++  margin:0 0 0 0.5em;
++  width:90%;
+ }
+-tr.even td.sorting_1 {
+-  background-color: #E6F5EB;
++.topForm p {margin:0px 20px 20px;}
++.topForm div.right {margin-top:0px; text-align:left;}
++.topForm button{display:block;}
++.topForm div.item:last-child{clear:both;}
++div.item div.right {margin-top:0px;margin-bottom:10px;}
++div.tempo div.right{margin-top:10px;margin-bottom:10px;}
++div.buttons{margin-bottom:20px;}
++div.groupmenu ul li {
++  margin-left: 0;
++  margin-right: 20px;
+ }
+-.actionMessage{
+-  color: #008959;
+-  background-color: #dbf0e8;
++.checkbox div {display:inline;}
++.checkbox input {width:5%;}
++#config div.checkbox{
++  padding-top:0px;
+ }
++#location>label{
++  display:block;
++}
++div.item{margin-bottom:10px;}
++div.roles{width:250px;margin-top:15px;}
++div.roles label{font-weight:bold;display:inline;}
++div.halfcolumn a[id*="copyDetails-"], div.halfcolumn a[id*="removeLink-"] { float:none; }
++div.conceptItem{float:none;clear:both;}
++div.groupmenu ul{clear:both;margin-top:0px;}
++div.info{line-height:1.5em;}
++#zone-footer-wrapper{display:none;height:0px;}
++#section-footer{height:90px;}
++#footer_content{text-align:left;}
++#footer_content div.right{
++  font-size:1em;
++  margin:0px;
++  text-align:left;
++  width:500px;
++}
++#footer_content ul li{margin:0px;}
+\ No newline at end of file
