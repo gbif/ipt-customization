@@ -17,44 +17,75 @@ Index: src/main/webapp/WEB-INF/pages/portal/resource.ftl
 +++ src/main/webapp/WEB-INF/pages/portal/resource.ftl	(working copy)
 @@ -20,6 +20,7 @@
  <#include "/WEB-INF/pages/macros/forms.ftl"/>
+
  <#include "/WEB-INF/pages/inc/header.ftl">
+
  	<title>${resource.title!resource.shortname!}</title>	
+
 +<#assign sideMenuResource=true />
+
  <#include "/WEB-INF/pages/inc/menu.ftl">
+
  
+
  <div class="grid_24">
+
 @@ -33,7 +34,7 @@
  </div>
+
  <div id="resourcelogo">
+
  	<#if eml.logoUrl?has_content>
+
 -	<img src="${eml.logoUrl}" />
+
 +	<img src="${eml.logoUrl}" alt="${eml.title!resource.shortname}"  />
+
  	</#if>
+
  </div>
+
  <p>
+
 @@ -83,7 +84,7 @@
                    </#if>
+
                      <tr>
+
                          <th><@s.text name='portal.resource.published.eml'/></th>
+
 -                        <td><a href="${baseURL}/eml.do?r=${resource.shortname}&v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+
 +                        <td><a href="${baseURL}/eml.do?r=${resource.shortname}&amp;v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+
                                 onClick="_gaq.push(['_trackEvent', 'EML', 'Download', '${resource.shortname}']);"><@s.text name='portal.resource.download'/></a>
+
                              (${emlFormattedSize})
+
                          </td>
+
 @@ -91,7 +92,7 @@
  
+
                      <tr>
+
                          <th><@s.text name='portal.resource.published.rtf'/></th>
+
 -                        <td><a href="${baseURL}/rtf.do?r=${resource.shortname}&v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+
 +                        <td><a href="${baseURL}/rtf.do?r=${resource.shortname}&amp;v=<#if version??>${version}<#else>${resource.emlVersion}</#if>"
+
                                 onClick="_gaq.push(['_trackEvent', 'RTF', 'Download', '${resource.shortname}']);"><@s.text name='portal.resource.download'/></a>
+
                              (${rtfFormattedSize})
+
                          </td>
+
 Index: src/main/webapp/WEB-INF/pages/portal/home.ftl
 ===================================================================
 --- src/main/webapp/WEB-INF/pages/portal/home.ftl	(revision 4460)
 +++ src/main/webapp/WEB-INF/pages/portal/home.ftl	(working copy)
-@@ -1,18 +1,24 @@
+@@ -1,18 +1,18 @@
  <#escape x as x?html>
    <#include "/WEB-INF/pages/inc/header.ftl">
 +<script type="text/javascript" src="${baseURL}/js/jquery/jquery.dataTables.js"></script>
@@ -67,12 +98,6 @@ Index: src/main/webapp/WEB-INF/pages/portal/home.ftl
 +  <@resourcesTable shownPublicly=true numResourcesShown=50 sEmptyTable="dataTables.sEmptyTable" columnToSortOn=1 sortOrder="asc" />
  <h1 class="rtableTitle"><@s.text name="portal.home.title"/></h1>
 +
-+<p>
-+
-+TODO: 
-+
-+</p>
-+
  <div id="rtableContainer"></div>
  
  <!-- RSS Feed shown if there are resources -->
@@ -83,6 +108,27 @@ Index: src/main/webapp/WEB-INF/pages/portal/home.ftl
    </p>
    <#else>
    <p><@s.text name="portal.home.no.public"/></p>
+Index: src/main/webapp/WEB-INF/pages/about.ftl
+===================================================================
+--- src/main/webapp/WEB-INF/pages/about.ftl	(revision 4460)
++++ src/main/webapp/WEB-INF/pages/about.ftl	(working copy)
+@@ -5,6 +5,15 @@
+ [#include "/WEB-INF/pages/inc/menu.ftl"/]
+ 
+ <div class="grid_18 suffix_6">
+-${content}
++<p>
++This serves as a data repository for the Global Invasive Alien Species Information Partnership.
++</p>
++<p>
++For information about the partnership, please see <a href="http://giasipartnership.myspecies.info/">The GIASIPartnership Gateway</a>
++</p>
++<p>
++For assistance with publishing content through this repository, please contact <a href="mailto:trobertson@gbif.org">Tim Robertson</a> at GBIF.
++</p>
++
+ </div>
+ [#include "/WEB-INF/pages/inc/footer.ftl"/]
 Index: src/main/webapp/WEB-INF/pages/inc/header.ftl
 ===================================================================
 --- src/main/webapp/WEB-INF/pages/inc/header.ftl	(revision 4460)
@@ -233,8 +279,8 @@ Index: src/main/webapp/WEB-INF/pages/inc/menu.ftl
 +							</form>
 +					  	[/#if]
 +					</div>				
-+					<div id="nav_title"></div>
-+					<div id="nav_portal">Demo installation</div>
++					<div id="nav_title">GIASIP</div>
++					<div id="nav_portal">data repository</div>
 +				</div>
 +				<div id="menu">		
 +       	      <ul>
@@ -302,22 +348,22 @@ Index: src/main/webapp/WEB-INF/pages/inc/menu.ftl
 +<div id="side_bar">
 +[#if resource.lastPublished??]
 +	[#if (resource.recordsPublished>0)]
-+	<p><a class="round big_button no_margin" id="dwc_archive" href="${baseURL}/archive.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'Archive', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T��l��charger donn��es[#else]Download dataset[/#if]</a></p>
++	<p><a class="round big_button no_margin" id="dwc_archive" href="${baseURL}/archive.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'Archive', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T������l������charger donn������es[#else]Download dataset[/#if]</a></p>
 +	[/#if]
-+	<p><a class="round big_button multi_line" id="eml_file" href="${baseURL}/eml.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'EML', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T��l��charger metadonn��es en format EML[#else]Download metadata as an EML file[/#if]</a></p>
++	<p><a class="round big_button multi_line" id="eml_file" href="${baseURL}/eml.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'EML', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T������l������charger metadonn������es en format EML[#else]Download metadata as an EML file[/#if]</a></p>
 +	[#if rtfFileExisting]
-+	<p><a class="round big_button multi_line" id="rtf_file" href="${baseURL}/rtf.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'RTF', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T��l��charger metadonn��es en format RTF[#else]Download metadata as an RTF file[/#if]</a></p>
++	<p><a class="round big_button multi_line" id="rtf_file" href="${baseURL}/rtf.do?r=${resource.shortname}" onClick="_gaq.push(['_trackEvent', 'RTF', 'Download', '${resource.shortname}']);">[#if localeLanguage=='fr']T������l������charger metadonn������es en format RTF[#else]Download metadata as an RTF file[/#if]</a></p>
 +	[/#if]
 +		[#if eml.physicalData?has_content]
 +			[#list eml.physicalData as item]
 +			[#if item.distributionUrl?starts_with('http://data.canadensys.net/explorer/d/')]
-+			<p><a class="round big_button[#if localeLanguage=='en'] multi_line[/#if]" id="explorer_link" href="${item.distributionUrl}[#if localeLanguage=='fr']?lang=fr[/#if]" target="_blank" onClick="_gaq.push(['_trackEvent', 'Canadensys explorer', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir donn��es sur Canadensys[#else]Explore this dataset on Canadensys[/#if]</a></p>
++			<p><a class="round big_button[#if localeLanguage=='en'] multi_line[/#if]" id="explorer_link" href="${item.distributionUrl}[#if localeLanguage=='fr']?lang=fr[/#if]" target="_blank" onClick="_gaq.push(['_trackEvent', 'Canadensys explorer', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir donn������es sur Canadensys[#else]Explore this dataset on Canadensys[/#if]</a></p>
 +			[/#if]
 +			[/#list]
 +			
 +			[#list eml.physicalData as item]
 +			[#if item.distributionUrl?starts_with('http://www.gbif.org/dataset/')]
-+			<p><a class="round big_button" id="gbif_link" href="${item.distributionUrl}" target="_blank" onClick="_gaq.push(['_trackEvent', 'GBIF data portal', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir donn��es sur GBIF[#else]Explore this dataset on GBIF[/#if]</a></p>
++			<p><a class="round big_button" id="gbif_link" href="${item.distributionUrl}" target="_blank" onClick="_gaq.push(['_trackEvent', 'GBIF data portal', 'Outbound link', '${resource.shortname}']);">[#if localeLanguage=='fr']Voir donn������es sur GBIF[#else]Explore this dataset on GBIF[/#if]</a></p>
 +			[/#if]
 +			[/#list]
 +		[/#if]
@@ -550,7 +596,7 @@ Index: src/main/webapp/styles/common.css
 ===================================================================
 --- src/main/webapp/styles/common.css	(revision 0)
 +++ src/main/webapp/styles/common.css	(revision 0)
-@@ -0,0 +1,571 @@
+@@ -0,0 +1,565 @@
 +/* Stylesheet for http://data.canadensys.net */
 +
 +/*-- HTML elements --*/
@@ -593,8 +639,8 @@ Index: src/main/webapp/styles/common.css
 +/*-- Header --*/
 +
 +#header {
-+	background-color: #3E9788;
-+	height: 180px;
++	background-color: #134823;
++	height: 120px;
 +	position: relative;
 +}
 +
@@ -625,8 +671,7 @@ Index: src/main/webapp/styles/common.css
 +
 +#nav_title {
 +  width: 300px;
-+  height: 300px;
-+	background: url("../images/EUBlogo.png") top left no-repeat;
++  height: 180px;
 +	float: left;
 +	font-family: "Century Gothic", Arial, Sans-Serif;
 +	font-size: 4.2em;
@@ -677,12 +722,7 @@ Index: src/main/webapp/styles/common.css
 +	position: relative;
 +}
 +#menu ul li {
-+	background: -moz-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
-+	background: -ms-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
-+	background: -o-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
-+	background: -webkit-linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
-+	background: linear-gradient(bottom, #0b0b09 20%, #32342b 60%);
-+	background-color :#22241e;	display: block;
++	background-color: #0C2E16;	display: block;
 +	float: left;
 +	font-family: "Tw Cen MT", Arial, Sans-Serif;
 +	font-size: 2.2em;
@@ -819,7 +859,7 @@ Index: src/main/webapp/styles/common.css
 +/*-- Footer --*/
 +
 +#footer {
-+	background-color: #3E9788;
++	background-color: #134823;
 +	clear: both;
 +	height: 90px;
 +	width: 100%;
@@ -1344,3 +1384,18 @@ Index: src/main/webapp/styles/custom.css
 +}
 +#footer_content ul li{margin:0px;}
 \ No newline at end of file
+Index: pom.xml
+===================================================================
+--- pom.xml	(revision 4460)
++++ pom.xml	(working copy)
+@@ -203,8 +203,8 @@
+           </execution>
+         </executions>
+         <configuration>
+-          <doCheck>${devModeNegated}</doCheck>
+-          <doUpdate>${devModeNegated}</doUpdate>
++          <doCheck>false</doCheck>
++          <doUpdate>false</doUpdate>
+         </configuration>
+       </plugin>
+ 
